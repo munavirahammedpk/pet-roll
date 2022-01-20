@@ -1,0 +1,159 @@
+<section class="container mb-5">
+    <form action="/edit-pet/{{details._id}}" method="post" enctype="multipart/form-data">
+
+        <div class="container mt-4">
+            <h2 class="text-center">Edit Details</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="container mt-5">
+                        <h4>Pet Details :</h4>
+                        <label for="">Name</label>
+                        <input type="text" name="name" class="form-control" value="{{details.name}}" required>
+
+                        <label for="">Category</label>
+                        <input type="text" name="category" value="{{details.category}}" class="form-control">
+
+                        <label for="">Price</label>
+                        <input type="number" name="price" value="{{details.price}}" class="form-control">
+
+                        <label for="">Description</label>
+                        <textarea name="description" id="" cols="30" rows="3" maxlength="180" class="form-control"
+                            placeholder="">{{details.description}}</textarea>
+
+                        <label for="">Image 1</label>
+                        <img onload="checkImg()" src="/pet-images/{{details._id}}/{{details._id}}0.jpg" id="imgview0"
+                            alt="">
+                        <input type="file" name="image0" class="form-control" onchange="viewimg0(event)">
+                        <br>
+                        {{#if (ifSecond details._id)}}
+                        <div>
+                        <label for="">Image 2</label>
+                        <img src="/pet-images/{{details._id}}/{{details._id}}1.jpg" id="imgview1" alt="">
+                        <input type="file" name="image1" class="form-control" onchange="viewimg1(event)">
+                        
+                        </div>
+                        {{/if}}
+                        <br>
+                        {{#if (ifThird details._id)}}
+                        <div>
+                        <label for="">Image 3</label>
+                        <img src="/pet-images/{{details._id}}/{{details._id}}2.jpg" id="imgview2" alt="">
+                        <input type="file" name="image2" class="form-control" onchange="viewimg2(event)">
+                        
+                        </div>
+                        {{/if}}
+                        <br>
+                        {{#if (ifFourth details._id)}}
+                        <div>
+                        <label for="">Image 4</label>
+                        <img src="/pet-images/{{details._id}}/{{details._id}}3.jpg" id="imgview3" alt="">
+                        <input type="file" name="image3" class="form-control" onchange="viewimg3(event)">
+                        
+                        </div>
+                        {{/if}}
+                        <div class="divtext"></div>
+                        <br>
+                        <button onclick="addImg()" id="adImg" type="button" class="ck btn btn-primary">Add
+                            Image</button><br>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="container mt-5">
+                        <h4>Seller Details :</h4>
+                        <div class="form-group">
+                            <label for="">Owner Name</label>
+                            <input type="text" class="form-control" name="oname" value="{{details.oname}}"
+                                placeholder="Enter Your Name...">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Mobile Number</label>
+                            <input type="number" class="form-control" name="mobile" value="{{details.mobile}}"
+                                placeholder="Enter Phone Number">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Place</label>
+                            <input type="text" class="form-control" name="place" value="{{details.place}}"
+                                placeholder="Enter Your Place...">
+                        </div>
+                        <div class="form-group">
+                            <label for="">District</label>
+                            <input type="text" class="form-control" name="district" value="{{details.district}}"
+                                placeholder="District Name...">
+                        </div>
+                        <button type="submit" class="btn btn-success mt-4">Submit</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+</section>
+<script>
+    var i = 0
+    function checkImg() {
+
+        if (document.getElementById('imgview1')) {
+            i = 1
+        }
+        if (document.getElementById('imgview2')) {
+            i = 2
+        }
+        if (document.getElementById('imgview3')) {
+            i = 3
+        }
+
+
+        //console.log(i)
+    }
+    function addImg() {
+        i += 1
+        //console.log(i)
+        if (i >= 4) {
+            $('.divtext').append("<br><p style='color:red'>Only Four Images You Can Upload</p>")
+            $('#adImg').remove()
+        } else {
+            $('.divtext').append("<br><div><input type='file' name='image" + i + "' class='form-control'><span><svg onclick='deleteInput(this)' xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='red' class='bi bi-x-circle' viewBox='0 0 16 16'><path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/><path d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/></svg></span></div>");
+            //<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+            //  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+            // <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+            // </svg>
+        }
+
+    }
+    function deleteInput(e) {
+
+        e.parentNode.parentNode.remove()
+    }
+
+    /*$(function () {
+        console.log(valueOfI)
+        $('.ck').click(function () {
+            i += 1
+            if (i >= 4) {
+                $('.divtext').append("<br><p style='color:red'>Only Four Images You Can Upload</p>")
+            } else {
+                $('.divtext').append("<br><input type='file' name='image" + i + "' class='form-control'>");
+            }
+        })
+    })*/
+
+    function viewimg0(event) {
+        //alert(event.target.files)
+        document.getElementById('imgview0').src = URL.createObjectURL(event.target.files[0])
+    }
+    function viewimg1(event) {
+        //alert(event.target.files)
+        document.getElementById('imgview1').src = URL.createObjectURL(event.target.files[0])
+    }
+    function viewimg2(event) {
+        //alert(event.target.files)
+        document.getElementById('imgview2').src = URL.createObjectURL(event.target.files[0])
+    }
+    function viewimg3(event) {
+        //alert(event.target.files)
+        document.getElementById('imgview3').src = URL.createObjectURL(event.target.files[0])
+    }
+
+</script>

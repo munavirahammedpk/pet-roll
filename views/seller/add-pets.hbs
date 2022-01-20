@@ -1,0 +1,83 @@
+<section class="container mb-5">
+    <form action="/add-pets" method="post" enctype="multipart/form-data">
+
+        <div class="container mt-4">
+            <h2 class="text-center">Sell Your Pets</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="container mt-5">
+                        <h4>Pet Details :</h4>
+                        <label for="">Name</label>
+                        <input type="text" name="name" maxlength="30" class="form-control" required>
+
+                        <label for="">Category</label>
+                        <input type="text" name="category" class="form-control">
+
+                        <label for="">Price</label>
+                        <input type="number" name="price" class="form-control">
+
+                        <label for="">Description</label>
+                        <textarea name="description" id="" cols="30" rows="3" maxlength="180" class="form-control" placeholder="Enter a Brief Description About Your Pet"></textarea>
+
+                        <label for="">Image</label>
+                        <input type="file" name="image0" class="form-control" required>
+                        <br>
+
+                        <div class="divtext"></div>
+                        <br>
+                        <button type="button" class="ck btn btn-primary">Add Image</button><br>
+                        
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="container mt-5">
+                        <h4>Seller Details :</h4>
+                        <div class="form-group">
+                            <label for="">Owner Name</label>
+                            <input type="text" class="form-control" name="oname" placeholder="Enter Your Name...">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Mobile Number</label>
+                            <input type="number" class="form-control" name="mobile" placeholder="Enter Phone Number" >
+                        </div>
+                        <div class="form-group">
+                            <label for="">Place</label>
+                            <input type="text" class="form-control" name="place" placeholder="Enter Your Place...">
+                        </div>
+                        <div class="form-group">
+                            <label for="">District</label>
+                            <input type="text" class="form-control" name="district" placeholder="District Name...">
+                        </div>
+                        <div hidden>
+                            <input type="text" name="userid" value="{{user._id}}" hidden>
+                        </div>                       
+                        <button type="submit" class="btn btn-success mt-4">Submit</button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </form>
+
+</section>
+<script>
+
+    var i = 0;
+    $(function () {
+        $('.ck').click(function () {
+            i += 1
+            if (i >= 4) {
+                $('.divtext').append("<br><p style='color:red'>Only Four Images You Can Upload</p>")
+            } else {
+                $('.divtext').append("<br><div><input type='file' name='image" + i + "' class='form-control'><span><svg onclick='deleteInput(this)' xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='red' class='bi bi-x-circle' viewBox='0 0 16 16'><path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/><path d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/></svg></span></div>");
+            }
+        })
+    })
+    function deleteInput(e) {
+
+        e.parentNode.parentNode.remove()
+    }
+   // }
+
+</script>

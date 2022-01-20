@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-md-4 m-auto">
+        <div class="container mt-5 pl-5">
+            <h2 class="text-center">Admin Login</h2>
+            <form action="/admin/login" method="POST">
+            {{#if error}}
+                <h5 class="error" style="color: rgb(233, 13, 13);">Invalid User Name Or Password</h5>
+            {{/if}}
+                <div class="form-group">
+                    <label for="">Email Address</label>
+                    <input type="email" class="form-control" name="email" placeholder="Enter email">
+
+                </div>
+                <div class="form-group">
+                    <label for="">Password</label>
+                    <input type="password" class="form-control" name="password" placeholder="Password" pattern=".{8,}" title="Must contain at least 8 or more characters" required>
+                </div>
+                
+                <a href="/admin/signup">Create new account ?</a>
+                <button type="submit" class="btn btn-primary float-right">Login</button>
+            </form>
+            
+        </div>
+    </div>
+</div>
+

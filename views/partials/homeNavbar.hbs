@@ -1,0 +1,113 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 col-lg-10 col-sm-12">
+            <div class=" boxContainer mt-3">
+                <form action="/search" method="get">
+                    <table class="elementsContainer">
+                        <tr>
+                            <td>
+                                <input onclick="loseFocus()" id="search-box" onkeyup="sendData(this)" autocomplete="off" name="search"
+                                    class="form-control mr-sm-2 search" type="text"
+                                    placeholder="Search Pets,Categories....." aria-label="Search">
+                            </td>
+                            <td>
+                                <button class="my-2 my-sm-0 button" type="submit"><i class="bi bi-search"></i></button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+        <div>
+            <section id="searchResults">
+
+            </section>
+        </div>
+    </div>
+</div>
+<style>
+    .boxContainer {
+        position: relative;
+        //width: 250px;
+        height: 50px;
+        border: 2px solid #2980b9;
+        padding: 0px 10px;
+        border-radius: 50px;
+    }
+
+    .elementsContainer {
+        width: 100%;
+        //height: 100%;
+        vertical-align: middle;
+    }
+
+    .search {
+        border: none;
+        height: 100%;
+        width: 100%;
+        padding: 0px 5px;
+        //border-radius:50px;
+        font-size: 22px;
+        font-family: "Nunito";
+        color: #424242;
+        font-weight: 500;
+    }
+
+    .search:focus {
+        outline: none;
+    }
+
+    .button {
+        border: none;
+        font-size: 20px;
+        color: #2980b9;
+        background: none;
+        cursor: pointer;
+    }
+</style>
+<script>
+    function sendData(e) {
+        let searchResults = document.getElementById('searchResults')
+        let match = e.value.match(/^[a-zA-Z]*/);
+        let match2 = e.value.match(/\s*/);
+        if (match2[0] === e.value) {
+            searchResults.innerHTML = '';
+            return;
+        }
+        if (match[0] === e.value) {
+            fetch('getPets', {
+                method: 'post',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ payload: e.value })
+            }).then(res => res.json()).then(data => {
+                let payload = data.payload
+                //console.log(payload[0].name)
+                searchResults.innerHTML = '';
+                if (payload.length < 1) {
+                    searchResults.innerHTML = '<p>Sorry Nothing Found</p>';
+                    return;
+                }
+                payload.forEach((item, index) => {
+                    if (index > 0) searchResults.innerHTML += '<hr>';
+                    searchResults.innerHTML += '<p onclick="searchPet(this)">' + item.name + '</P>';
+                    //searchResults.innerHTML+='<p>'+item.category+'</P>'                
+                });
+                payload.forEach((item, index) => {
+                    if (index > 0) searchResults.innerHTML += '<hr>';
+                    searchResults.innerHTML += '<p>' + item.category + '</P>';
+                    //searchResults.innerHTML+='<p>'+item.category+'</P>'                
+                });
+                payload.forEach((item, index) => {
+                    if (index > 0) searchResults.innerHTML += '<hr>';
+                    searchResults.innerHTML += '<p>' + item.description + '</P>';
+                    //searchResults.innerHTML+='<p>'+item.category+'</P>'                
+                });
+                return;
+            })
+        }
+
+    }
+    function searchPet(e) {
+        document.getElementById('search-box').value = e.innerHTML
+    }
+</script>
