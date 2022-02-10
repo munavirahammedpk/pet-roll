@@ -193,13 +193,14 @@ router.get('/more/:id', (req, res) => {
   })
 
 })
-router.get('/animal/:category', async (req, res) => {
+router.get('/faqs', async (req, res) => {
   //console.log(req.params.category);
-  isImage()
-  let details = await petsHelpers.Animal(req.params.category)
-  //console.log(dog);
-  let user = req.session.user
-  res.render('buyer/category', { details, user, buyer: true })
+  if(req.session.user){
+    let user=req.session.user
+    res.render('buyer/FAQs', {user})
+  }else{
+    res.render('buyer/FAQs')
+  }  
 })
 router.get('/dashboard', verifyLogin, (req, res) => {
   //console.log(req.session.user._id);

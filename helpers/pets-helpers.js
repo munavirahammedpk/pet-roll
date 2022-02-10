@@ -20,14 +20,6 @@ module.exports = {
         })
 
     },
-    Animal: (key) => {
-        return new Promise(async (resolve, reject) => {
-            var regex = new RegExp(key, 'i')
-            let animal = await db.get().collection(collection.PET_COLLECTION).find({category: regex}).toArray()
-            //console.log(dog);
-            resolve(animal)
-        })
-    },
     getPetDetails: (petId) => {
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.PET_COLLECTION).findOne({ _id: ObjectId(petId) }).then((pet) => {
