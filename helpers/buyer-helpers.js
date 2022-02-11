@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt')
 //const { reject, promise } = require('bcrypt/promises')
 //const { Promise } = require('mongodb')
 
-module.exports={
+module.exports = {
     doSignUp: (userData) => {
         console.log(userData);
         return new Promise(async (resolve, reject) => {
@@ -33,25 +33,27 @@ module.exports={
         return new Promise(async (resolve, reject) => {
             let loginStatus = false
             let response = {}
-            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ email: userData.email })
-            //console.log(user);
-            if (user) {
-                bcrypt.compare(userData.password, user.password).then((status) => {
-                    // console.log(status);
-                    if (status) {
-
-                        response.user = user,
-                            response.status = true
-                        resolve(response)
-                    } else {
-                        resolve({ status: false })
-                    }
-                })
-
-
-
+            if (await db.get().collection(collection.BANNED_COLLECTION).findOne({ bannedId: userData.email })) {
+                console.log('banned');
+                resolve({ banned: true })
             } else {
-                resolve({ status: false })
+               let user = await db.get().collection(collection.USER_COLLECTION).findOne({ email: userData.email })
+                //console.log(user);
+                if (user) {
+                    bcrypt.compare(userData.password, user.password).then((status) => {
+                        // console.log(status);
+                        if (status) {
+
+                            response.user = user,
+                                response.status = true
+                            resolve(response)
+                        } else {
+                            resolve({ status: false })
+                        }
+                    })
+                } else {
+                    resolve({ status: false })
+                }
             }
         })
     },
@@ -195,16 +197,16 @@ module.exports={
             }
         })
     },
-    restPassword:(newpass,userId)=>{
+    restPassword: (newpass, userId) => {
         console.log(userId);
-        return new Promise(async(resolve,reject)=>{
+        return new Promise(async (resolve, reject) => {
             newpass = await bcrypt.hash(newpass, 10)
             db.get().collection(collection.USER_COLLECTION)
-            .updateOne({_id:objectId(userId)},
-            {$set:{password:newpass}}
-           ).then(()=>{
-               resolve()
-           })
+                .updateOne({ _id: objectId(userId) },
+                    { $set: { password: newpass } }
+                ).then(() => {
+                    resolve()
+                })
         })
     }
 }

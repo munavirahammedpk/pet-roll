@@ -130,7 +130,7 @@ router.get('/login', (req, res) => {
     res.redirect('/')
 
   } else {
-    res.render('buyer/login', { error: req.session.logginErr })
+    res.render('buyer/login', { error: req.session.logginErr,bannedmg:req.session.banned })
     req.session.logginErr = false
   }
 
@@ -157,6 +157,9 @@ router.post('/signup', (req, res) => {
 })
 router.post('/login', (req, res) => {
   //console.log(req.body.email);
+  //buyerHelpers.checkBanned(req.body.email).then((response)=>{
+    //console.log(response);
+  //})
   buyerHelpers.doLogin(req.body).then((response) => {
     // console.log(response);
     if (response.status) {
@@ -165,6 +168,10 @@ router.post('/login', (req, res) => {
 
       res.redirect('/')
     } else {
+      if(response.banned){
+        console.log('banned...');
+        req.session.banned=true
+      }
       req.session.logginErr = true
       res.redirect('/login')
     }

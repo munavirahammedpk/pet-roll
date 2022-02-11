@@ -3,5 +3,6 @@ module.exports={
     USER_COLLECTION:'user',
     DASHBOARD_COLLECTION:'dashboard',
     FAVOURITE_COLLECTION:'favourite',
-    ADMIN_COLLECTION:'admin'
+    ADMIN_COLLECTION:'admin',
+    BANNED_COLLECTION:'banned'
 }

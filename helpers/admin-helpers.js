@@ -14,10 +14,12 @@ module.exports = {
     },
     deleteUser: (userId) => {
         return new Promise(async (resolve, reject) => {
-            await db.get().collection(collection.USER_COLLECTION).deleteOne({ _id: objectId(userId) }).then((response) => {
-                //console.log(response);
+            await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectId(userId)}).then(async(response)=>{
+                let bannedId=response.email
+                await db.get().collection(collection.BANNED_COLLECTION).insertOne({bannedId})
+            })
+            await db.get().collection(collection.USER_COLLECTION).deleteOne({ _id: objectId(userId) }).then(() => {               
                 resolve()
-
             })
         })
 
@@ -29,8 +31,6 @@ module.exports = {
                 {
                     $match: { user: objectId(userId) }
                 },
-
-
                 {
                     $lookup: {
                         from: collection.PET_COLLECTION,

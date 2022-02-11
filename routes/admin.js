@@ -24,9 +24,9 @@ router.get('/', verifyLogin, function (req, res, next) {
   })
 });
 router.get('/delete-user/:id', (req, res) => {
-  let id=req.params.id
-  adminHelpers.deleteUser(req.params.id).then(() => {
-    adminHelpers.deletePets(req.params.id)
+  let userId=req.params.id
+  adminHelpers.deleteUser(userId).then(() => {
+    adminHelpers.deletePets(userId)
     res.redirect('/admin')
   })
 })
