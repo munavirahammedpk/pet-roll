@@ -130,8 +130,16 @@ router.get('/login', (req, res) => {
     res.redirect('/')
 
   } else {
-    res.render('buyer/login', { error: req.session.logginErr,bannedmg:req.session.banned })
-    req.session.logginErr = false
+    //console.log(req.session.banned);
+    if (req.session.banned) {
+      res.render('buyer/login', { bannedmg: req.session.banned })
+      req.session.banned = false
+    } else {
+      res.render('buyer/login', { error: req.session.logginErr })
+      req.session.logginErr = false
+    }
+
+
   }
 
 })
@@ -157,9 +165,11 @@ router.post('/signup', (req, res) => {
 })
 router.post('/login', (req, res) => {
   //console.log(req.body.email);
-  //buyerHelpers.checkBanned(req.body.email).then((response)=>{
-    //console.log(response);
-  //})
+  buyerHelpers.checkBanned(req.body.email).then((response) => {
+    if (response.banned) {
+      req.session.banned = true
+    }
+  })
   buyerHelpers.doLogin(req.body).then((response) => {
     // console.log(response);
     if (response.status) {
@@ -168,13 +178,14 @@ router.post('/login', (req, res) => {
 
       res.redirect('/')
     } else {
-      if(response.banned){
-        console.log('banned...');
-        req.session.banned=true
-      }
       req.session.logginErr = true
       res.redirect('/login')
     }
+    /*if(response.banned){
+      console.log('banned...');
+      req.session.banned=true
+      res.redirect('/login')
+    }*/
   })
 
 })
@@ -202,12 +213,12 @@ router.get('/more/:id', (req, res) => {
 })
 router.get('/faqs', async (req, res) => {
   //console.log(req.params.category);
-  if(req.session.user){
-    let user=req.session.user
-    res.render('buyer/FAQs', {user})
-  }else{
+  if (req.session.user) {
+    let user = req.session.user
+    res.render('buyer/FAQs', { user })
+  } else {
     res.render('buyer/FAQs')
-  }  
+  }
 })
 router.get('/dashboard', verifyLogin, (req, res) => {
   //console.log(req.session.user._id);
@@ -315,44 +326,44 @@ router.post('/forgot', (req, res) => {
   buyerHelpers.emailExist(req.body.email).then((response) => {
     //console.log(response); 
     //console.log('hiiiiiiii');
-  if (response !== null) {
-    console.log(response.password);
-    const secret = jwt_secret + response.password
-    const payload = {
-      email: response.email,
-      id: response._id
-    }
-    const token = jwt.sign(payload, secret, { expiresIn: '15m' })
-    const link = 'http://localhost:7000/rest-password/' + response._id + '/' + token
-    console.log(link);
-    //console.log(response.email);
+    if (response !== null) {
+      console.log(response.password);
+      const secret = jwt_secret + response.password
+      const payload = {
+        email: response.email,
+        id: response._id
+      }
+      const token = jwt.sign(payload, secret, { expiresIn: '15m' })
+      const link = 'http://localhost:7000/rest-password/' + response._id + '/' + token
+      console.log(link);
+      //console.log(response.email);
 
-  const data = {
-    from: 'PetsBay<mnvrahmd786@gmail.com>',
-    to: response.email,
-    subject: 'Reset Password Link',
-    html:'<p>Reset Your Password...</p><a style="font-size:25px" href='+link+'>Click here</a><p> Valid for 10 Minutes</p>'
-  };
+      const data = {
+        from: 'PetsBay<mnvrahmd786@gmail.com>',
+        to: response.email,
+        subject: 'Reset Password Link',
+        html: '<p>Reset Your Password...</p><a style="font-size:25px" href=' + link + '>Click here</a><p> Valid for 10 Minutes</p>'
+      };
 
-  var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    // true for 465, false for other ports
-    auth: {
-      user: 'mnvrahmd786@gmail.com', // generated ethereal user
-      pass: '8078745821', // generated ethereal password
-    },
-  });
-  transporter.sendMail(data, (error, info) => {
-    if (error) {
-      console.log(error);
+      var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        // true for 465, false for other ports
+        auth: {
+          user: 'mnvrahmd786@gmail.com', // generated ethereal user
+          pass: '8078745821', // generated ethereal password
+        },
+      });
+      transporter.sendMail(data, (error, info) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent..' + info);
+        }
+      })
+      res.render('buyer/send-message')
     } else {
-      console.log('Email sent..' + info);
+      res.render('buyer/no-user')
     }
-  })
-  res.render('buyer/send-message')
- } else {
-   res.render('buyer/no-user')
- }
   })
 })
 router.get('/rest-password/:id/:token', (req, res) => {
@@ -371,7 +382,7 @@ router.get('/rest-password/:id/:token', (req, res) => {
 })
 router.post('/rest-password/:id/:token', (req, res) => {
   const { id, token } = req.params
-  buyerHelpers.restPassword(req.body.newpass,id).then(()=>{
+  buyerHelpers.restPassword(req.body.newpass, id).then(() => {
     res.redirect('/login')
   })
 })

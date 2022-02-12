@@ -6,6 +6,9 @@
             {{#if error}}
                 <h5 class="error" style="color: rgb(233, 13, 13);">Invalid User Name Or Password</h5>
             {{/if}}
+            {{#if bannedmg}}
+                <h5 class="error" style="color: rgb(233, 13, 13);">Your Account is Banned !!...</h5>
+            {{/if}}
                 <div class="form-group">
                     <label for="">Email Address</label>
                     <input type="email" class="form-control" name="email" placeholder="Enter email" required>

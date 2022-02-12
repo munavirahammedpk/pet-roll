@@ -33,28 +33,25 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             let loginStatus = false
             let response = {}
-            if (await db.get().collection(collection.BANNED_COLLECTION).findOne({ bannedId: userData.email })) {
-                console.log('banned');
-                resolve({ banned: true })
-            } else {
-               let user = await db.get().collection(collection.USER_COLLECTION).findOne({ email: userData.email })
-                //console.log(user);
-                if (user) {
-                    bcrypt.compare(userData.password, user.password).then((status) => {
-                        // console.log(status);
-                        if (status) {
 
-                            response.user = user,
-                                response.status = true
-                            resolve(response)
-                        } else {
-                            resolve({ status: false })
-                        }
-                    })
-                } else {
-                    resolve({ status: false })
-                }
+            let user = await db.get().collection(collection.USER_COLLECTION).findOne({ email: userData.email })
+            //console.log(user);
+            if (user) {
+                bcrypt.compare(userData.password, user.password).then((status) => {
+                    // console.log(status);
+                    if (status) {
+
+                        response.user = user,
+                            response.status = true
+                        resolve(response)
+                    } else {
+                        resolve({ status: false })
+                    }
+                })
+            } else {
+                resolve({ status: false })
             }
+
         })
     },
     getDetails: (id) => {
@@ -198,7 +195,7 @@ module.exports = {
         })
     },
     restPassword: (newpass, userId) => {
-        console.log(userId);
+        //console.log(userId);
         return new Promise(async (resolve, reject) => {
             newpass = await bcrypt.hash(newpass, 10)
             db.get().collection(collection.USER_COLLECTION)
@@ -208,5 +205,16 @@ module.exports = {
                     resolve()
                 })
         })
+    },
+    checkBanned: (bannedId) => {
+        return new Promise(async(resolve,reject)=>{
+            if (await db.get().collection(collection.BANNED_COLLECTION).findOne({ bannedId:bannedId })) {
+                console.log('banned');
+                resolve({ banned: true })
+            } else {
+    
+            }
+        })       
     }
+
 }
