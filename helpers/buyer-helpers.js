@@ -33,7 +33,6 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             let loginStatus = false
             let response = {}
-
             let user = await db.get().collection(collection.USER_COLLECTION).findOne({ email: userData.email })
             //console.log(user);
             if (user) {
@@ -207,14 +206,15 @@ module.exports = {
         })
     },
     checkBanned: (bannedId) => {
-        return new Promise(async(resolve,reject)=>{
-            if (await db.get().collection(collection.BANNED_COLLECTION).findOne({ bannedId:bannedId })) {
-                console.log('banned');
-                resolve({ banned: true })
-            } else {
-    
-            }
-        })       
+        //console.log(bannedId);
+        return new Promise(async (resolve, reject) => {
+            await db.get().collection(collection.BANNED_COLLECTION).findOne({ bannedId: bannedId }).then((response) => {
+                if (response) {
+                    resolve({ banned: true })
+                } else {
+                    resolve({ banned: false })
+                }
+            })
+        })
     }
-
 }

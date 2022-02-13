@@ -7,6 +7,9 @@
                 {{#if error}}
                 <h5 class="error" style="color: rgb(233, 13, 13);">This Email Id is Already Exist</h5>
                  {{/if}}
+                 {{#if bannedmsg}}
+                 <h5 class="error" style="color: rgb(233, 13, 13);">Your Account is Banned...!</h5>
+                 {{/if}}
                     <div class="form-group">
                         <label for="">Name</label>
                         <input type="text" class="form-control" name="name" placeholder="Enter name" required>

@@ -147,21 +147,32 @@ router.get('/signup', (req, res) => {
   if (req.session.user) {
     res.redirect('/')
   } else {
-    res.render('buyer/signup', { error: req.session.logginErr })
+    res.render('buyer/signup', { error: req.session.logginErr, bannedmsg: req.session.banned })
+    req.session.banned = false
     req.session.logginErr = false
   }
 })
 router.post('/signup', (req, res) => {
-  buyerHelpers.doSignUp(req.body).then((response) => {
-    if (response.status) {
-      req.session.loggedIn = true
-      req.session.user = response.user
-      res.redirect('/')
-    } else {
-      req.session.logginErr = true
+  buyerHelpers.checkBanned(req.body.email).then((response) => {
+    //console.log(response.banned);
+    if (response.banned) {
+      req.session.banned = true
       res.redirect('/signup')
+    } else {
+      console.log('Signed.......');
+      buyerHelpers.doSignUp(req.body).then((response) => {
+        if (response.status) {
+          req.session.loggedIn = true
+          req.session.user = response.user
+          res.redirect('/')
+        } else {
+          req.session.logginErr = true
+          res.redirect('/signup')
+        }
+      })
     }
   })
+
 })
 router.post('/login', (req, res) => {
   //console.log(req.body.email);
@@ -181,12 +192,8 @@ router.post('/login', (req, res) => {
       req.session.logginErr = true
       res.redirect('/login')
     }
-    /*if(response.banned){
-      console.log('banned...');
-      req.session.banned=true
-      res.redirect('/login')
-    }*/
   })
+
 
 })
 router.get('/logout', (req, res) => {
