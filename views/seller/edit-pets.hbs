@@ -19,9 +19,9 @@
                         <label for="">Description</label>
                         <textarea name="description" id="" cols="30" rows="3" maxlength="180" class="form-control"
                             placeholder="">{{details.description}}</textarea>
-
+                        <div onload="checkImg()"></div>
                         <label for="">Image 1</label>
-                        <img onload="checkImg()" src="/pet-images/{{details._id}}/{{details._id}}0.jpg" id="imgview0"
+                        <img src="/pet-images/{{details._id}}/{{details._id}}0.jpg" id="imgview0"
                             alt="">
                         <input type="file" name="image0" class="form-control" onchange="viewimg0(event)">
                         <br>
@@ -91,9 +91,9 @@
 
 </section>
 <script>
-    var i = 0
+    var i =0
     function checkImg() {
-
+        console.log('img sett')
         if (document.getElementById('imgview1')) {
             i = 1
         }
