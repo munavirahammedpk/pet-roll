@@ -15,13 +15,12 @@
         {{#if details.status}}
         <h2 class="text-center" style="color: brown;">No Items in Your Dashboard !!</h2>
         <button class="seller ml-5 mt-5">
-            <a class="sell" href="/seller" style="text-decoration: none; color:rgb(224, 42, 42)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-plus-lg"
-                    viewBox="0 0 16 16">
-                    <path
-                        d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z" />
-                </svg>Sell
-            </a>
+          <a class="sell" href="/seller" style="text-decoration: none; color:rgb(224, 42, 42)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-plus-lg"
+              viewBox="0 0 16 16">
+              <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z" />
+            </svg>Sell
+          </a>
         </button>
 
         {{else}}
@@ -36,7 +35,7 @@
           <td>
             <a href="/edit-pet/{{this._id}}" class="btn btn-primary">Edit</a>
             <a href="delete-pet/{{this._id}}" class="btn btn-danger"
-              onclick="return confirm('Are you want to delete {{this.name}} ?')">Delete</a>
+              onclick="return myConfirm('Are you want to delete {{this.name}} ?')">Delete</a>
             <!-- <a href="/admin/delete-product/?id={{this._id}}&name=..." class="btn btn-danger">Delete</a>-->
           </td>
         </tr>
@@ -48,4 +47,74 @@
     </table>
 
   </div>
+  
 </div>
+<div id="snackbar">Some text some message..</div>
+<script>
+  function myConfirm(value) {
+    var result = confirm(value)
+    if (result) {
+      alert(result)
+      function myFunction() {
+        // Get the snackbar DIV
+        var x = document.getElementById("snackbar");
+
+        // Add the "show" class to DIV
+        x.className = "show";
+
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+      }
+      return true
+
+    } else {
+      return false
+    }
+  }
+</script>
+<style>
+  #snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+</style>
