@@ -270,7 +270,6 @@ router.post('/edit-pet/:id', (req, res) => {
   })
 })
 router.get('/delete-pet/:id', (req, res) => {
-  //console.log(req.params.id);
   var id = req.params.id
   petsHelpers.deletePet(req.params.id).then(() => {
     const pathToDir = path.join(__dirname, '../public/pet-images/' + id)
@@ -279,11 +278,10 @@ router.get('/delete-pet/:id', (req, res) => {
         throw err
       }
     })
-    res.redirect('/dashboard')
+    res.json({status:true})
   })
 })
 router.get('/add-favourite/:id', (req, res) => {
-  // console.log(req.params.id);
   buyerHelpers.addToFavourite(req.params.id, req.session.user._id).then((response) => {
     //console.log(response.status);
     if (response.status) {
