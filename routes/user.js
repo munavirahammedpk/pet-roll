@@ -98,13 +98,13 @@ router.post('/add-pets', (req, res) => {
     let image1 = req.files.image1
     let image2 = req.files.image2
     let image3 = req.files.image3
-
+    console.log(image0);
     fs.mkdir(path.join(__dirname, '../public/pet-images/' + id + '/'), {}, err => {
       if (err) throw err;
-      console.log('file created...');
+      //console.log('file created...');
 
     })
-    console.log(req.body.userid);
+        //console.log(req.body.userid);
     image0.mv('./public/pet-images/' + id + '/' + id + 0 + '.jpg')
 
     if (image1) {
@@ -278,7 +278,7 @@ router.get('/delete-pet/:id', (req, res) => {
         throw err
       }
     })
-    res.json({status:true})
+    res.json({ status: true })
   })
 })
 router.get('/add-favourite/:id', (req, res) => {
