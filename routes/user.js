@@ -125,9 +125,9 @@ router.post('/add-pets', (req, res) => {
 
   })
 })
-router.get('/login', (req, res) => {
+router.get('/login', (req, res,next) => {
   if (req.session.user) {
-    res.redirect('/')
+    next()
 
   } else {
     //console.log(req.session.banned);
@@ -300,7 +300,7 @@ router.get('/delete-favourite/:id', (req, res) => {
 router.get('/favourite', verifyLogin, (req, res) => {
   let user = req.session.user
   buyerHelpers.getFavourite(req.session.user._id).then((details) => {
-
+    //console.log(details.status);
     res.render('buyer/favourites', { details, user })
 
 
