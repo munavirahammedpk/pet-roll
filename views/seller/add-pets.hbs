@@ -8,16 +8,17 @@
                     <div class="container mt-5">
                         <h4>Pet Details :</h4>
                         <label for="">Name</label>
-                        <input type="text" name="name" maxlength="30" class="form-control" required>
+                        <input type="text" name="name" maxlength="30" class="form-control" placeholder="Type your Pet's Name.." required>
 
                         <label for="">Category</label>
-                        <input type="text" name="category" class="form-control">
+                        <input type="text" name="category" class="form-control" placeholder="Dog, Cat, Fish, Bird or anything" required>
 
                         <label for="">Price</label>
-                        <input type="number" name="price" class="form-control">
+                        <input type="number" name="price" class="form-control" required placeholder="Estimated Price in RS.">
 
                         <label for="">Description</label>
-                        <textarea name="description" id="" cols="30" rows="3" maxlength="180" class="form-control" placeholder="Enter a Brief Description About Your Pet"></textarea>
+                        <textarea name="description" id="" cols="30" rows="3" maxlength="180" class="form-control"
+                            placeholder="Type a Brief Description About Your Pet" required></textarea>
 
                         <label for="">Image</label>
                         <input type="file" name="image0" class="form-control" required>
@@ -25,8 +26,8 @@
 
                         <div class="divtext"></div>
                         <br>
-                        <button type="button" class="ck btn btn-primary">Add Image</button><br>
-                        
+                        <button type="button" id="addImg" class="ck btn btn-primary">Add Image</button><br>
+
                     </div>
                 </div>
 
@@ -35,40 +36,40 @@
                         <h4>Seller Details :</h4>
                         <div class="form-group">
                             <label for="">Owner Name</label>
-                            <input type="text" class="form-control" name="oname" placeholder="Enter Your Name...">
+                            <input type="text" class="form-control" name="oname" required placeholder="Enter Your Name...">
                         </div>
                         <div class="form-group">
                             <label for="">Mobile Number</label>
-                            <input type="number" class="form-control" name="mobile" placeholder="Enter Phone Number" >
+                            <input type="number" class="form-control" name="mobile" placeholder="Enter a valid contact No.">
                         </div>
                         <div class="form-group">
                             <label for="">Place</label>
-                            <input type="text" class="form-control" name="place" placeholder="Enter Your Place...">
+                            <input type="text" class="form-control" name="place" required placeholder="Enter Your Place...">
                         </div>
                         <div class="form-group">
                             <label for="">District</label>
-                            <input type="text" class="form-control" name="district" placeholder="District Name...">
+                            <input type="text" class="form-control" name="district" required placeholder="District Name...">
                         </div>
                         <div hidden>
                             <input type="text" name="userid" value="{{user._id}}" hidden>
-                        </div>                       
+                        </div>
                         <button type="submit" class="btn btn-success mt-4">Submit</button>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </form>
 
 </section>
 <script>
-
     var i = 0;
     $(function () {
         $('.ck').click(function () {
             i += 1
             if (i >= 4) {
                 $('.divtext').append("<br><p style='color:red'>Only Four Images You Can Upload</p>")
+                $('#addImg').remove()
             } else {
                 $('.divtext').append("<br><div><input type='file' name='image" + i + "' class='form-control'><span><svg onclick='deleteInput(this)' xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='red' class='bi bi-x-circle' viewBox='0 0 16 16'><path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/><path d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/></svg></span></div>");
             }
@@ -78,6 +79,4 @@
 
         e.parentNode.parentNode.remove()
     }
-   // }
-
 </script>

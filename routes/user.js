@@ -9,13 +9,7 @@ const path = require('path');
 var Handlebars = require('handlebars');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
-//const Mailgun = require('mailgun-js');
-//const formData = require('form-data');
-//const API_KEY = '25ef8385f3bddb172a010fb21b868ae6-76f111c4-b0f908b6';
 
-//const DOMAIN = 'sandboxbe50611d25664584b65883ca6bc8f2f0.mailgun.org';
-//const mg = Mailgun({ apiKey: API_KEY, domain: DOMAIN });
-//const { getMaxListeners } = require('process');
 const jwt_secret = 'some super secret...'
 
 const verifyLogin = (req, res, next) => {
