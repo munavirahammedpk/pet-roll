@@ -1,14 +1,21 @@
 var express = require('express');
 var router = express.Router();
-var petsHelpers = require('../helpers/pets-helpers');
-var buyerHelpers = require('../helpers/buyer-helpers');
-var sellerHelpers = require('../helpers/seller-helpers');
+
+
+
+ //var petsHelpers = require('../helpers/pets-helpers');
+// var buyerHelpers = require('../helpers/buyer-helpers');
+// var sellerHelpers = require('../helpers/seller-helpers');
 const { response } = require('express');
 const fs = require('fs');
 const path = require('path');
 var Handlebars = require('handlebars');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
+const sellerModel = require('../models/userModel/seller-model');
+const petsHelper=require('../models/pet-model')
+const buyerHelper=require('../models/userModel/buyer-model')
+
 
 const jwt_secret = 'some super secret...'
 
@@ -70,8 +77,8 @@ router.get('/', async (req, res, next) => {
   var user = req.session.user
 
   isImage()
-
-  petsHelpers.getAllPets().then((pets) => {
+  
+  petsHelper.getAllPets().then((pets) => {
 
     //console.log(favitems);
     // console.log(user);
@@ -84,7 +91,7 @@ router.get('/seller', verifyLogin, (req, res) => {
   res.render('seller/add-pets', { user })
 })
 router.post('/add-pets', (req, res) => {
-  petsHelpers.addPets(req.body).then((id) => {
+  petsHelper.addPets(req.body).then((id) => {
 
     //sellerHelpers.addToDashboard()
 
@@ -110,7 +117,7 @@ router.post('/add-pets', (req, res) => {
     if (image3) {
       image3.mv('./public/pet-images/' + id + '/' + id + 3 + '.jpg')
     }
-    sellerHelpers.addToDashboard(req.session.user._id, id)
+    sellerModel.addToDashboard(req.session.user._id, id)
 
 
     res.render('seller/add-pets')
@@ -147,14 +154,14 @@ router.get('/signup', (req, res) => {
   }
 })
 router.post('/signup', (req, res) => {
-  buyerHelpers.checkBanned(req.body.email).then((response) => {
+  buyerHelper.checkBanned(req.body.email).then((response) => {
     //console.log(response.banned);
     if (response.banned) {
       req.session.banned = true
       res.redirect('/signup')
     } else {
-      console.log('Signed.......');
-      buyerHelpers.doSignUp(req.body).then((response) => {
+      //console.log('Signed.......');
+      buyerHelper.doSignUp(req.body).then((response) => {
         if (response.status) {
           req.session.loggedIn = true
           req.session.user = response.user
@@ -170,12 +177,12 @@ router.post('/signup', (req, res) => {
 })
 router.post('/login', (req, res) => {
   //console.log(req.body.email);
-  buyerHelpers.checkBanned(req.body.email).then((response) => {
+  buyerHelper.checkBanned(req.body.email).then((response) => {
     if (response.banned) {
       req.session.banned = true
     }
   })
-  buyerHelpers.doLogin(req.body).then((response) => {
+  buyerHelper.doLogin(req.body).then((response) => {
     // console.log(response);
     if (response.status) {
       req.session.loggedIn = true
@@ -199,10 +206,10 @@ router.get('/more/:id', (req, res) => {
   Handlebars.registerHelper("inc", function (value, options) {
     return parseInt(value) + 1;
   })
-  buyerHelpers.getDetails(req.params.id).then((details) => {
-    buyerHelpers.getOwnerId(req.params.id).then((id) => {
+  buyerHelper.getDetails(req.params.id).then((details) => {
+    buyerHelper.getOwnerId(req.params.id).then((id) => {
       //console.log(id);
-      buyerHelpers.getOtherPets(id).then((others) => {
+      buyerHelper.getOtherPets(id).then((others) => {
         let user = req.session.user
         res.render('buyer/more', { details, user, others })
       })
@@ -224,7 +231,7 @@ router.get('/faqs', async (req, res) => {
 router.get('/dashboard', verifyLogin, (req, res) => {
   //console.log(req.session.user._id);
   let user = req.session.user
-  sellerHelpers.getDashboard(req.session.user._id).then((details) => {
+  sellerModel.getDashboard(req.session.user._id).then((details) => {
     //console.log(details.status);
     if (details) {
       res.render('seller/view-dashboard', { details, user })
@@ -233,7 +240,7 @@ router.get('/dashboard', verifyLogin, (req, res) => {
 
 })
 router.get('/edit-pet/:id', async (req, res) => {
-  let details = await petsHelpers.getPetDetails(req.params.id)
+  let details = await petsHelper.getPetDetails(req.params.id)
   //console.log(details);
   isImage()
   let user = req.session.user
@@ -241,7 +248,7 @@ router.get('/edit-pet/:id', async (req, res) => {
 })
 router.post('/edit-pet/:id', (req, res) => {
   // console.log(req.body);
-  petsHelpers.updatePet(req.params.id, req.body).then(() => {
+  petsHelper.updatePet(req.params.id, req.body).then(() => {
     res.redirect('/dashboard')
     let id = req.params.id
     let image0 = req.files.image0
@@ -265,7 +272,7 @@ router.post('/edit-pet/:id', (req, res) => {
 })
 router.get('/delete-pet/:id', (req, res) => {
   var id = req.params.id
-  petsHelpers.deletePet(req.params.id).then(() => {
+  petsHelper.deletePet(req.params.id).then(() => {
     const pathToDir = path.join(__dirname, '../public/pet-images/' + id)
     fs.rmdir(pathToDir, { recursive: true }, (err) => {
       if (err) {
@@ -276,7 +283,7 @@ router.get('/delete-pet/:id', (req, res) => {
   })
 })
 router.get('/add-favourite/:id', (req, res) => {
-  buyerHelpers.addToFavourite(req.params.id, req.session.user._id).then((response) => {
+  buyerHelper.addToFavourite(req.params.id, req.session.user._id).then((response) => {
     //console.log(response.status);
     if (response.status) {
       res.json({ status: true })
@@ -284,7 +291,7 @@ router.get('/add-favourite/:id', (req, res) => {
   })
 })
 router.get('/delete-favourite/:id', (req, res) => {
-  buyerHelpers.deleteFav(req.params.id, req.session.user._id).then((response) => {
+  buyerHelper.deleteFav(req.params.id, req.session.user._id).then((response) => {
     if (response.status) {
       //console.log(response.status);
       res.json({ status: true })
@@ -293,7 +300,7 @@ router.get('/delete-favourite/:id', (req, res) => {
 })
 router.get('/favourite', verifyLogin, (req, res) => {
   let user = req.session.user
-  buyerHelpers.getFavourite(req.session.user._id).then((details) => {
+  buyerHelper.getFavourite(req.session.user._id).then((details) => {
     //console.log(details.status);
     res.render('buyer/favourites', { details, user })
 
@@ -302,12 +309,12 @@ router.get('/favourite', verifyLogin, (req, res) => {
 })
 router.get('/search', async (req, res) => {
   isImage()
-  let searched = await petsHelpers.searched(req.query.search)
+  let searched = await petsHelper.searched(req.query.search)
   res.render('buyer/searched', { searched, buyer: true })
 })
 router.post('/getPets', async (req, res) => {
   let payload = req.body.payload
-  let search = await petsHelpers.searchPet(payload)
+  let search = await petsHelper.searchPet(payload)
   res.json({ payload: search })
 })
 router.get('/addToFav', (req, res) => {
@@ -322,7 +329,7 @@ router.get('/forgot', (req, res) => {
 })
 router.post('/forgot', (req, res) => {
   //console.log(req.body.email);
-  buyerHelpers.emailExist(req.body.email).then((response) => {
+  buyerHelper.emailExist(req.body.email).then((response) => {
     //console.log(response); 
     //console.log('hiiiiiiii');
     if (response !== null) {
@@ -367,7 +374,7 @@ router.post('/forgot', (req, res) => {
 })
 router.get('/rest-password/:id/:token', (req, res) => {
   const { id, token } = req.params
-  buyerHelpers.checkIdExist(id).then((response) => {
+  buyerHelper.checkIdExist(id).then((response) => {
     console.log(response.password);
     const secret = jwt_secret + response.password
     try {
@@ -381,7 +388,7 @@ router.get('/rest-password/:id/:token', (req, res) => {
 })
 router.post('/rest-password/:id/:token', (req, res) => {
   const { id, token } = req.params
-  buyerHelpers.restPassword(req.body.newpass, id).then(() => {
+  buyerHelper.restPassword(req.body.newpass, id).then(() => {
     res.redirect('/login')
   })
 })

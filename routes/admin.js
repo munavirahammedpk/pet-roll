@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var adminHelpers = require('../helpers/admin-helpers')
 var Handlebars = require('handlebars');
 const { handlebars } = require('hbs');
 const path = require('path')
 const fs = require('fs');
+const adminHelper = require('../models/admin-model');
+
 const verifyLogin = (req, res, next) => {
   if (req.session.admin) {
     next()
@@ -19,14 +20,14 @@ router.get('/', verifyLogin, function (req, res, next) {
     return parseInt(value) + 1;
   })
   let admin = req.session.admin
-  adminHelpers.getUsers().then((users) => {
+  adminHelper.getUsers().then((users) => {
     res.render('admin/view-users', { users, admin });
   })
 });
 router.get('/delete-user/:id', (req, res) => {
   let userId=req.params.id
-  adminHelpers.deleteUser(userId).then(() => {
-    adminHelpers.deletePets(userId)
+  adminHelper.deleteUser(userId).then(() => {
+    adminHelper.deletePets(userId)// check this line //
     res.redirect('/admin')
   })
 })
@@ -35,13 +36,13 @@ router.get('/view-pets/:id', async (req, res) => {
     return parseInt(value) + 1;
   })
   let admin = req.session.admin
-  await adminHelpers.getPets(req.params.id).then((pets) => {
+  await adminHelper.getPets(req.params.id).then((pets) => {
     res.render('admin/view-pets', { pets, admin })
   })
 })
 router.get('/delete-pet/:id', (req, res) => {
   let id=req.params.id
-  adminHelpers.deletePet(req.params.id).then(() => {
+  adminHelper.deletePet(req.params.id).then(() => {
     const pathToDir = path.join(__dirname, '../public/pet-images/' + id)
     fs.rmdir(pathToDir, { recursive: true }, (err) => {
       if (err) {
@@ -56,7 +57,7 @@ router.get('/signup', (req, res) => {
 })
 router.post('/signup', (req, res) => {
   //console.log(req.body)
-  adminHelpers.doSignUp(req.body).then((response) => {
+  adminHelper.doSignUp(req.body).then((response) => {
     if (response.status) {
       req.session.loggedadmin = true
       req.session.admin = response.admin
@@ -74,7 +75,7 @@ router.get('/login', (req, res) => {
   }
 })
 router.post('/login', (req, res) => {
-  adminHelpers.doLogin(req.body).then((response) => {
+  adminHelper.doLogin(req.body).then((response) => {
     //console.log(response);
     if (response.status) {
       req.session.loggedIn = true

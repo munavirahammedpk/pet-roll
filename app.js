@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var hbs=require('express-handlebars')
 
+
 var buyerRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
 
@@ -27,10 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload())
 app.use(session({secret:'key',cookie:{maxAge:600000}}))
 
-db.connect((err)=>{
-  if(err) console.log('database connection error'+err);
-  else console.log('database connected');
-})
+db.connect();
 
 app.use('/', buyerRouter);
 app.use('/admin', adminRouter);
