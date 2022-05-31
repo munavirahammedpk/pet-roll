@@ -1,13 +1,13 @@
 const collections = require('../../config/collections')
 const schemas = require('../../schemas')
 const mongoose = require('mongoose')
-const { petModel } = require('../pet-model')
-const { favouriteModel } = require('../fav-model')
-const { bannedModel } = require('../banned-model')
 const ObjectId = mongoose.Types.ObjectId
 const bcrypt = require('bcrypt')
+const petModel = mongoose.model(collections.PET_COLLECTION, schemas.petSchema)
+const bannedModel= mongoose.model(collections.BANNED_COLLECTION,schemas.bannedSchema)
 
 module.exports.userModel = new mongoose.model(collections.USER_COLLECTION, schemas.userSchema)
+module.exports.favouriteModel = new mongoose.model(collections.FAVOURITE_COLLECTION, schemas.favouriteSchema)
 
 
 module.exports = {
@@ -16,17 +16,23 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             var user = await this.userModel.findOne({ email: userData.email })
             if (user) {
-                response.status = false
+                var response = {
+                    status: false
+                }
                 resolve(response)
             } else {
                 userData.password = await bcrypt.hash(userData.password, 10)
                 //console.log(userData.password);
-                var petCollection = new userModel(userData)//.then(async (data) => {
-                await petCollection.save().then(() => {
-                    let user = this.userModel.findOne({ _id: ObjectId(data.insertedId) })
+                var userCollection = new this.userModel(userData)//.then(async (data) => {
+                await userCollection.save().then(async (data) => {
+                    //console.log(data._id);
+                    let user = await this.userModel.findOne({ _id: ObjectId(data._id) })
+                    //console.log(user);
                     if (user) {
-                        response.user = user
-                        response.status = true
+                        response = {
+                            user: user,
+                            status: true
+                        }
                     }
 
                     resolve(response)
@@ -62,21 +68,26 @@ module.exports = {
     },
     getDetails: (id) => {
         return new Promise(async (resolve, reject) => {
-            let details = await petModel.find({ _id: id }).toArray()
+            let details = await petModel.find({ _id: ObjectId(id) }).lean().exec((err, details) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    resolve(details)
+                }
+            })
             //console.log(details);
-            resolve(details)
-        })
 
+        })
     },
     addToFavourite: (petId, userId) => {
         return new Promise(async (resolve, reject) => {
-            let favourite = await favouriteModel.findOne({ user: userId })
+            let favourite = await this.favouriteModel.findOne({ user:ObjectId (userId) })
             //console.log(favourate.user);
             if (favourite) {
 
-                favouriteModel.updateOne({ user: userId },
+                this.favouriteModel.updateOne({ user:ObjectId (userId) },
                     {
-                        $push: { pets: petId }
+                        $push: { pets:ObjectId (petId) }
                     }
                 ).then((response) => {
                     response.status = true
@@ -87,34 +98,34 @@ module.exports = {
                     user: ObjectId(userId),
                     pets: [ObjectId(petId)]
                 }
-                favouriteModel.insertOne(favObj).then((response) => {
+                var dashboardCollection = new this.favouriteModel(favObj)
+                dashboardCollection.save().then((response) => {
                     response.status = true
                     resolve(response)
                 })
             }
-
         })
     },
     getFavourite: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let favourite = await favouriteModel.findOne({ user: objectId(userId) })
-            let details = await favouriteModel.aggregate([
+            let favourite = await this.favouriteModel.findOne({ user: ObjectId(userId) })
+            let details = await this.favouriteModel.aggregate([
                 {
                     $match: { user: ObjectId(userId) }
                 },
-
-
                 {
                     $lookup: {
-                        from: collections.PET_COLLECTION,
+                        from: 'pets',
                         localField: 'pets',
                         foreignField: '_id',
                         as: 'favourite'
                     }
                 }
 
-            ]).toArray()
+            ])
+            //console.log(details);
             if (favourite) {
+                //console.log(details[0].favourite);
                 resolve(details[0].favourite)
             } else {
                 resolve({ status: true })
@@ -124,13 +135,11 @@ module.exports = {
     deleteFav: (petId, userId) => {
         //console.log(petId);
         return new Promise(async (resolve, reject) => {
-            await favouriteModel
+            await this.favouriteModel
                 .updateOne({ user: ObjectId(userId) },
                     {
-                        $pull: { pets: ObjectId(petId) }
+                        $pull: { pets:ObjectId (petId) }
                     }
-
-
                 ).then((response) => {
                     response.status = true
                     resolve(response)
@@ -139,7 +148,7 @@ module.exports = {
     },
     getFavouriteId: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let ids = await favouriteModel.findOne({ user: ObjectId(userId) })
+            let ids = await this.favouriteModel.findOne({ user: ObjectId(userId) })
             //resolve(ids.pets)
 
         })
@@ -154,13 +163,17 @@ module.exports = {
     },
     getOtherPets: (ownerId) => {
         return new Promise(async (resolve, reject) => {
-            let details = await petModel.find({ userid: ownerId }).toArray()
-            //console.log(details);
-            resolve(details)
+            let details = await petModel.find({ userid: ownerId }).lean().exec((err, details) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    resolve(details)
+                }
+            })
         })
     },
     emailExist: (userEmail) => {
-        console.log(userEmail);
+        //console.log(userEmail);
         return new Promise(async (resolve, reject) => {
             await this.userModel.findOne({ email: userEmail }).then((response) => {
                 resolve(response)

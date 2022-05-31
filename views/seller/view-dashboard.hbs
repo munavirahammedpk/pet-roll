@@ -34,12 +34,12 @@
           <td><img style="width: 50px; height=50px" src="/pet-images/{{this._id}}/{{this._id}}0.jpg" alt="..."></td>
           <td>
             <a href="/edit-pet/{{this._id}}" class="btn btn-primary">Edit</a>
-            <button onclick="deletePet('{{this._id}}','Are you want to delete {{this.name}} ?')"
+            <button onclick="deletePet('{{this._id}}','Are you want to delete {{this.name}} ?','{{this.name}}')"
               class="btn btn-danger">Delete</button>
             <!--onclick="return myConfirm('Are you want to delete {{this.name}} ?')"   <a href="/admin/delete-product/?id={{this._id}}&name=..." class="btn btn-danger">Delete</a>-->
           </td>
         </tr>
-        <div id="snackbar">You Deleted {{this.name}} ..!</div>
+        <div id="snackbar"></div>
         {{/each}}
         {{/if}}
 
@@ -52,17 +52,8 @@
 </div>
 
 <script>
-  /*function myConfirm(value) {
-    
-    if (result) {
-      //alert(result)
-      return true
-    } else {
-      return false
-    }
-    
-  }*/
-  function deletePet(petId, value) {
+
+  function deletePet(petId, value,name) {
     var result = confirm(value)
     if (result) {
       $.ajax({
@@ -70,18 +61,19 @@
         method: 'get',
         success: (response) => {
           if (response.status) {
-            document.getElementById(petId).innerHTML = ""
-            myFunction()
+             document.getElementById(petId).innerHTML = ""
+            myFunction(name)
           }
         }
       })
     }
 
   }
-  function myFunction() {
-  
+  function myFunction(name) {
+
     var x = document.getElementById("snackbar");
     x.className = "show";
+    x.innerHTML='You Deleted '+name;
     setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
   }
 

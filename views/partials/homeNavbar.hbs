@@ -6,8 +6,8 @@
                     <table class="elementsContainer">
                         <tr>
                             <td>
-                                <input onclick="loseFocus()" id="search-box" onkeyup="sendData(this)" autocomplete="off" name="search"
-                                    class="form-control mr-sm-2 search" type="text"
+                                <input onclick="loseFocus()" id="search-box" onkeyup="sendData(this)" autocomplete="off"
+                                    name="search" class="form-control mr-sm-2 search" type="text"
                                     placeholder="Search Pets,Categories....." aria-label="Search">
                             </td>
                             <td>
@@ -88,18 +88,18 @@
                     return;
                 }
                 payload.forEach((item, index) => {
-                    if (index > 0) searchResults.innerHTML += '<hr>';
                     searchResults.innerHTML += '<p onclick="searchPet(this)">' + item.name + '</P>';
+                    // if (index > 0) {
+                        //searchResults.innerHTML += '<hr>';
+                    //} 
+                    //searchResults.innerHTML += '<hr>';
                     //searchResults.innerHTML+='<p>'+item.category+'</P>'                
                 });
                 payload.forEach((item, index) => {
-                    if (index > 0) searchResults.innerHTML += '<hr>';
-                    searchResults.innerHTML += '<p>' + item.category + '</P>';
-                    //searchResults.innerHTML+='<p>'+item.category+'</P>'                
-                });
-                payload.forEach((item, index) => {
-                    if (index > 0) searchResults.innerHTML += '<hr>';
-                    searchResults.innerHTML += '<p>' + item.description + '</P>';
+                    searchResults.innerHTML += '<p onclick="searchPet(this)">' + item.category + '</P>';
+                    //if (index > 0) {
+                        //searchResults.innerHTML += '<hr>';
+                    //}
                     //searchResults.innerHTML+='<p>'+item.category+'</P>'                
                 });
                 return;

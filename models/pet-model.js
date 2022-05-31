@@ -10,11 +10,13 @@ module.exports.petModel = new mongoose.model(collections.PET_COLLECTION, schemas
 
 module.exports = {
      
-    addPets: (petDetails, userId) => {
+    addPets: (petDetails) => {
         //console.log(userId);
         return new Promise(async (resolve, reject) => {
             var petCollection = new this.petModel(petDetails)
-            petCollection.save()
+            petCollection.save().then((data)=>{
+                resolve(data._id)
+            })
             //  await db.get().collection(collection.PET_COLLECTION).insertOne(petDetails).then((data) => {
             //     resolve(data.insertedId)
             // })
@@ -22,13 +24,22 @@ module.exports = {
     },
     getAllPets: () => {
         return new Promise(async(resolve, reject) => {
-            let AllPets = await this.petModel.find({}).sort({ _id: -1 }).toArray()
-            resolve(AllPets)
+             await this.petModel.find({}).sort({ _id: -1 }).lean().exec((err,data)=>{
+                if(err){
+                    console.log(err);
+                }else{
+                    
+            
+                    resolve(data)
+                }
+            })
+            //console.log(AllPets);
+            //resolve(AllPets)
         })
     },
     getPetDetails: (petId) => {
         return new Promise(async (resolve, reject) => {
-            await this.petModel.findOne({ _id: petId }).then((pet) => {
+            await this.petModel.findOne({ _id: petId }).lean().then((pet) => {
                 resolve(pet)
             })
         })
@@ -68,7 +79,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             //var regex = new RegExp(payload, 'i')
             //console.log(regex);
-            let searchPet = await this.petModel.find({$or:[{name:{$regex:new RegExp('^'+payload+'.*','i')}},{category:{$regex:new RegExp('^'+payload+'.*','i')}},{description:{$regex:new RegExp('^'+payload+'.*','i')}}]}).toArray()
+            let searchPet = await this.petModel.find({$or:[{name:{$regex:new RegExp('^'+payload+'.*','i')}},{category:{$regex:new RegExp('^'+payload+'.*','i')}},{description:{$regex:new RegExp('^'+payload+'.*','i')}}]}).lean()
             //searchPet=searchPet.slice(0,10)// for set limt
 
             //console.log(searchPet);
@@ -77,7 +88,7 @@ module.exports = {
     },
     searched:(key)=>{
         return new Promise(async(resolve,reject)=>{
-            let searchPet = await this.petModel.find({$or:[{name:{$regex:new RegExp('^'+key+'.*','i')}},{category:{$regex:new RegExp('^'+key+'.*','i')}},{description:{$regex:new RegExp('^'+key+'.*','i')}}]}).toArray()
+            let searchPet = await this.petModel.find({$or:[{name:{$regex:new RegExp('^'+key+'.*','i')}},{category:{$regex:new RegExp('^'+key+'.*','i')}},{description:{$regex:new RegExp('^'+key+'.*','i')}}]}).lean()
             resolve(searchPet)
         })
 

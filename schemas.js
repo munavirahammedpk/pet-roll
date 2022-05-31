@@ -19,10 +19,12 @@ module.exports={
         password:String
     }),
     dashboardSchema: new mongoose.Schema({
-    
+        user:mongoose.Types.ObjectId,
+        pets:Array
     }),
     favouriteSchema: new mongoose.Schema({
-
+        user:mongoose.Types.ObjectId,
+        pets:Array
     }),
     adminSchema: new mongoose.Schema({
         name:String,
@@ -30,6 +32,6 @@ module.exports={
         password:String
     }),
     bannedSchema: new mongoose.Schema({
-
+        bannedId:String
     })
 }

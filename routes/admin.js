@@ -27,7 +27,6 @@ router.get('/', verifyLogin, function (req, res, next) {
 router.get('/delete-user/:id', (req, res) => {
   let userId=req.params.id
   adminHelper.deleteUser(userId).then(() => {
-    adminHelper.deletePets(userId)// check this line //
     res.redirect('/admin')
   })
 })

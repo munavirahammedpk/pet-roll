@@ -2,19 +2,22 @@ const { response } = require('express')
 const collections = require('../config/collections')
 const mongoose = require('mongoose')
 const schemas = require('../schemas')
-const petModel = require('./pet-model')
-const userModel = require('./userModel/buyer-model')
-const bannedModel=require('./banned-model')
-const dashboardModel=require('./dash-model')
+
+
 const bcrypt = require('bcrypt')
 const ObjectId = mongoose.Types.ObjectId
 
 module.exports.adminModel = new mongoose.model(collections.ADMIN_COLLECTION, schemas.adminSchema)
+const userModel = mongoose.model(collections.USER_COLLECTION, schemas.userSchema)
+const bannedModel= mongoose.model(collections.BANNED_COLLECTION,schemas.bannedSchema)
+const dashboardModel = mongoose.model(collections.DASHBOARD_COLLECTION, schemas.dashboardSchema)
+const petModel = mongoose.model(collections.PET_COLLECTION, schemas.petSchema)
 
 module.exports={
     getUsers:()=>{
         return new Promise(async(resolve,reject)=>{
-            let users=await userModel.find({}).toArray()
+            let users=await userModel.find({}).lean()
+            //console.log(users);
             resolve(users)
         })
     },
@@ -22,11 +25,14 @@ module.exports={
         return new Promise(async(resolve,reject)=>{
             await userModel.findOne({_id:userId}).then(async(response)=>{
                 let bannedId=response.email
-                await bannedModel.insertOne({bannedId})
+                var bannedCollection=new bannedModel({bannedId})
+                await bannedCollection.save().then(async()=>{
+                    await userModel.deleteOne({_id:userId}).then(()=>{
+                        resolve()
+                    })
+                })
             })
-            await userModel.deleteOne({_id:userId}).then(()=>{
-                resolve()
-            })
+            
         })
     },
     getPets: (userId) => {
@@ -34,18 +40,18 @@ module.exports={
             let dashboard = await dashboardModel.findOne({ user: ObjectId(userId) })
             let pets = await dashboardModel.aggregate([
                 {
-                    $match: { user:userId }
+                    $match: { user:ObjectId (userId) }
                 },
                 {
                     $lookup: {
-                        from: collections.PET_COLLECTION,
+                        from: 'pets',
                         localField: 'pets',
                         foreignField: '_id',
                         as: 'pet'
                     }
                 }
 
-            ]).toArray()
+            ])
             if (dashboard) {
                 resolve(pets[0].pet)
             } else {
@@ -57,7 +63,7 @@ module.exports={
     },
     deletePet: (petId) => {
         return new Promise(async (resolve, reject) => {
-            await petModel.deleteOne({ _id: petId}).then((response) => {
+            await petModel.deleteOne({ _id:ObjectId(petId)}).then((response) => {
                 //console.log(response);
                 resolve()
 
@@ -71,8 +77,9 @@ module.exports={
 
             adminData.password = await bcrypt.hash(adminData.password, 10)
 
-            await this.adminModel.insertOne(adminData).then(async (data) => {
-                let admin = await this.adminModel.findOne({ _id: ObjectId(data.insertedId) })
+             var adminCollection=new this.adminModel(adminData)
+             await adminCollection.save().then(async (data) => {
+                let admin = await this.adminModel.findOne({  _id: ObjectId(data._id) })
                 //console.log(admin);
                 if (admin) {
                     response.admin = admin
@@ -106,8 +113,5 @@ module.exports={
                 resolve({ status: false })
             }
         })
-    },
-    deletePets: (userId) => {
-        
     }
 }

@@ -1,17 +1,20 @@
 const collections = require('../../config/collections')
 const schemas = require('../../schemas')
 const mongoose = require('mongoose')
-const { dashboardModel } = require('../dash-model')
+module.exports.dashboardModel = new mongoose.model(collections.DASHBOARD_COLLECTION, schemas.dashboardSchema)
+
 const ObjectId = mongoose.Types.ObjectId
+//const petModel = mongoose.model(collections.PET_COLLECTION, schemas.petSchema)
+
 
 module.exports = {
     addToDashboard: (userId, petId) => {
         //console.log(userId);
         // console.log(petId);
         return new Promise(async (resolve, reject) => {
-            let dashboard = await dashboardModel.findOne({ user: userId })
+            let dashboard = await this.dashboardModel.findOne({ user: ObjectId(userId) })
             if (dashboard) {
-                dashboardModel.updateOne({ user: ObjectId(userId) },
+                this.dashboardModel.updateOne({ user: ObjectId(userId) },
                     {
                         $push: { pets: ObjectId(petId) }
                     }
@@ -20,10 +23,11 @@ module.exports = {
                 })
             } else {
                 let dashObj = {
-                    user: userId,
-                    pets: [petId]
+                    user: ObjectId(userId),
+                    pets: [ObjectId(petId)]
                 }
-                dashboardModel.insertOne(dashObj).then((response) => {
+                var dashboardCollection = new this.dashboardModel(dashObj)
+                dashboardCollection.save().then((response) => {
                     resolve()
                 })
             }
@@ -31,23 +35,21 @@ module.exports = {
     },
     getDashboard: (userId) => {
         return new Promise(async (resolve, reject) => {
-            let dashboard = await dashboardModel.findOne({ user: ObjectId(userId) })
-            let details = await dashboardModel.aggregate([
+            let dashboard = await this.dashboardModel.findOne({ user: ObjectId(userId) })
+            let details = await this.dashboardModel.aggregate([
                 {
                     $match: { user: ObjectId(userId) }
-                },
-
-
+                },                
                 {
                     $lookup: {
-                        from: collections.PET_COLLECTION,
+                        from: 'pets',
                         localField: 'pets',
                         foreignField: '_id',
                         as: 'dashboard'
                     }
                 }
-
-            ]).toArray()
+            ])
+            //console.log(details);
             if (dashboard) {
                 resolve(details[0].dashboard)
             } else {
