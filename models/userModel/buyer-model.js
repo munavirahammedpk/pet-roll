@@ -2,7 +2,7 @@ const collections = require('../../config/collections')
 const schemas = require('../../schemas')
 const mongoose = require('mongoose')
 const ObjectId = mongoose.Types.ObjectId
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const petModel = mongoose.model(collections.PET_COLLECTION, schemas.petSchema)
 const bannedModel= mongoose.model(collections.BANNED_COLLECTION,schemas.bannedSchema)
 

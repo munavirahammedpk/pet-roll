@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const schemas = require('../schemas')
 
 
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const ObjectId = mongoose.Types.ObjectId
 
 module.exports.adminModel = new mongoose.model(collections.ADMIN_COLLECTION, schemas.adminSchema)
