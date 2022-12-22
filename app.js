@@ -9,7 +9,7 @@ var hbs=require('express-handlebars')
 var buyerRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
 
-var fileUpload=require('express-fileUpload')
+var fileUpload=require('express-fileupload')
 
 var app = express();
 var db=require('./config/connection')
