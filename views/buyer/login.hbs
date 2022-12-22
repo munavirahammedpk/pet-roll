@@ -11,12 +11,21 @@
             {{/if}}
                 <div class="form-group">
                     <label for="">Email Address</label>
-                    <input type="email" class="form-control" name="email" placeholder="Enter email" required>
-
+                    <input type="email" style="border-radius: 50px;" class="form-control" name="email" placeholder="Enter email" required>
+                        <div>
+                            {{#if userErr}}
+                            <p style="color: red;">User name does not exist, Invalid user name.</p>
+                            {{/if}}
+                        </div>
                 </div>
                 <div class="form-group">
                     <label for="">Password</label>
-                    <input type="password" class="form-control" name="password" placeholder="Password" pattern=".{8,}" title="Must contain at least 8 or more characters" required>
+                    <input type="password" style="border-radius: 50px;" class="form-control" name="password" placeholder="Password" pattern=".{8,}" title="Must contain at least 8 or more characters" required>
+                    <div>
+                        {{#if passwordErr}}
+                        <p style="color: red;">Password is does not match with User name</p>
+                        {{/if}}
+                    </div>
                 </div>
                 
                 <a href="/signup">Create new account ?</a>

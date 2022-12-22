@@ -2,20 +2,27 @@
     <div class="row">
         <div class="col-md-10 col-lg-10 col-sm-12">
             <div class=" boxContainer mt-3">
-                <form action="/search" method="get">
+               <!-- <form action="/search" method="get">
                     <table class="elementsContainer">
                         <tr>
                             <td>
                                 <input onclick="loseFocus()" id="search-box" onkeyup="sendData(this)" autocomplete="off"
                                     name="search" class="form-control mr-sm-2 search" type="text"
-                                    placeholder="Search Pets,Categories....." aria-label="Search">
+                                    placeholder="" aria-label="Search">
                             </td>
                             <td>
-                                <button class="my-2 my-sm-0 button" type="submit"><i class="bi bi-search"></i></button>
+                                <button hidden class="my-2 my-sm-0 button" type="submit"><i
+                                        class="bi bi-search"></i></button>
                             </td>
                         </tr>
                     </table>
-                </form>
+                </form>-->
+                <div id="search2">
+                    <form class="example" action="/search" method="get">
+                        <input id="search-box" onkeyup="sendData(this)" name="search" type="text" placeholder="Search Pets, Categories..." autocomplete="off">
+                        <button hidden type="submit"><i class="fa fa-search"></i></button>
+                    </form>
+                </div>
             </div>
         </div>
         <div>
@@ -26,6 +33,7 @@
     </div>
 </div>
 <style>
+    /*
     .boxContainer {
         position: relative;
         //width: 250px;
@@ -64,6 +72,47 @@
         background: none;
         cursor: pointer;
     }
+        */
+
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Style the search field */
+    form.example input[type=text] {
+        border-radius: 50px;
+        padding: 10px;
+        font-size: 17px;
+        border: 1px solid grey;
+        float: left;
+        width: 80%;
+        background: #f1f1f1;
+    }
+
+    /* Style the submit button */
+    form.example button {
+        float: left;
+        width: 20%;
+        padding: 10px;
+        background: #2196F3;
+        color: white;
+        font-size: 17px;
+        border: 1px solid grey;
+        border-left: none;
+        /* Prevent double borders */
+        cursor: pointer;
+    }
+
+    form.example button:hover {
+        background: #0b7dda;
+    }
+
+    /* Clear floats */
+    form.example::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
 </style>
 <script>
     function sendData(e) {
@@ -90,7 +139,7 @@
                 payload.forEach((item, index) => {
                     searchResults.innerHTML += '<p onclick="searchPet(this)">' + item.name + '</P>';
                     // if (index > 0) {
-                        //searchResults.innerHTML += '<hr>';
+                    //searchResults.innerHTML += '<hr>';
                     //} 
                     //searchResults.innerHTML += '<hr>';
                     //searchResults.innerHTML+='<p>'+item.category+'</P>'                
@@ -98,7 +147,7 @@
                 payload.forEach((item, index) => {
                     searchResults.innerHTML += '<p onclick="searchPet(this)">' + item.category + '</P>';
                     //if (index > 0) {
-                        //searchResults.innerHTML += '<hr>';
+                    //searchResults.innerHTML += '<hr>';
                     //}
                     //searchResults.innerHTML+='<p>'+item.category+'</P>'                
                 });

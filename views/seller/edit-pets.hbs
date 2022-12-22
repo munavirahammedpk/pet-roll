@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="container mt-5">
-                        <h4>Pet Details :</h4>                      
+                        <h4>Pet Details :</h4>
                         <label for="">Name</label>
                         <input type="text" name="name" class="form-control" value="{{details.name}}" required>
 
@@ -19,40 +19,7 @@
                         <textarea name="description" id="" cols="30" rows="3" maxlength="180" class="form-control"
                             required>{{details.description}}</textarea>
 
-                        <label for="">Image 1</label>
-                        <img src="/pet-images/{{details._id}}/{{details._id}}0.jpg" id="imgview0" alt="">
-                        <input type="file" name="image0" class="form-control" onchange="viewimg0(event)" required>
-                        <br>
-                        {{#if (ifSecond details._id)}}
-                        <div>
-                            <label for="">Image 2</label>
-                            <img src="/pet-images/{{details._id}}/{{details._id}}1.jpg" id="imgview1" alt="">
-                            <input type="file" name="image1" class="form-control" onchange="viewimg1(event)">
 
-                        </div>
-                        {{/if}}
-                        <br>
-                        {{#if (ifThird details._id)}}
-                        <div>
-                            <label for="">Image 3</label>
-                            <img src="/pet-images/{{details._id}}/{{details._id}}2.jpg" id="imgview2" alt="">
-                            <input type="file" name="image2" class="form-control" onchange="viewimg2(event)">
-
-                        </div>
-                        {{/if}}
-                        <br>
-                        {{#if (ifFourth details._id)}}
-                        <div>
-                            <label for="">Image 4</label>
-                            <img src="/pet-images/{{details._id}}/{{details._id}}3.jpg" id="imgview3" alt="">
-                            <input type="file" name="image3" class="form-control" onchange="viewimg3(event)">
-
-                        </div>
-                        {{/if}}
-                        <div class="divtext"></div>
-                        <br>
-                        <button onclick="addImg()" id="adImg" type="button" class="ck btn btn-primary">Add
-                            Image</button><br>
                     </div>
                 </div>
 
@@ -79,6 +46,7 @@
                             <input type="text" class="form-control" name="district" value="{{details.district}}"
                                 placeholder="District Name..." required>
                         </div>
+                        <center><p style="color: red;">If you want to change Images of pets,<br> You can only add as a new pet</p></center>
                         <button type="submit" class="btn btn-success mt-4">Submit</button>
                     </div>
                 </div>
@@ -107,7 +75,7 @@
             $('.divtext').append("<br><p style='color:red'>Only Four Images You Can Upload</p>")
             $('#adImg').remove()
         } else {
-            $('.divtext').append("<br><div><input type='file' name='image" + i + "' class='form-control'><span><svg onclick='deleteInput(this)' xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='red' class='bi bi-x-circle' viewBox='0 0 16 16'><path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/><path d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/></svg></span></div>");           
+            $('.divtext').append("<br><div><input type='file' name='image" + i + "' class='form-control'><span><svg onclick='deleteInput(this)' xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='red' class='bi bi-x-circle' viewBox='0 0 16 16'><path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/><path d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/></svg></span></div>");
         }
     }
     function deleteInput(e) {

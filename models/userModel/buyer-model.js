@@ -57,11 +57,11 @@ module.exports = {
                             response.status = true
                         resolve(response)
                     } else {
-                        resolve({ status: false })
+                        resolve({ passwordErr: true })
                     }
                 })
             } else {
-                resolve({ status: false })
+                resolve({ userIdErr: true })
             }
 
         })

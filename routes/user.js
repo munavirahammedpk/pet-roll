@@ -129,15 +129,19 @@ router.post('/add-pets', (req, res) => {
 router.get('/login', (req, res, next) => {
   if (req.session.user) {
     next()
-
   } else {
     //console.log(req.session.banned);
     if (req.session.banned) {
       res.render('buyer/login', { bannedmg: req.session.banned })
       req.session.banned = false
     } else {
-      res.render('buyer/login', { error: req.session.logginErr })
-      req.session.logginErr = false
+      if (req.session.userErr) {
+        res.render('buyer/login', { userErr: req.session.userErr })
+        req.session.userErr = false
+      } else {
+        res.render('buyer/login', { passwordErr: req.session.passwordErr })
+        req.session.passwordErr = false
+      }
     }
 
 
@@ -187,10 +191,12 @@ router.post('/login', (req, res) => {
         if (response.status) {
           req.session.loggedIn = true
           req.session.user = response.user
-
           res.redirect('/')
-        } else {
-          req.session.logginErr = true
+        } else if (response.userIdErr) {
+          req.session.userErr = true
+          res.redirect('/login')
+        } else if (response.passwordErr) {
+          req.session.passwordErr = true
           res.redirect('/login')
         }
       })
@@ -245,24 +251,6 @@ router.get('/edit-pet/:id', async (req, res) => {
 router.post('/edit-pet/:id', (req, res) => {
   petsHelper.updatePet(req.params.id, req.body).then(() => {
     res.redirect('/dashboard')
-    let id = req.params.id
-    let image0 = req.files.image0
-    let image1 = req.files.image1
-    let image2 = req.files.image2
-    let image3 = req.files.image3
-    if (image0) {
-      image0.mv('./public/pet-images/' + id + '/' + id + 0 + '.jpg')
-    }
-    if (image1) {
-      image1.mv('./public/pet-images/' + id + '/' + id + 1 + '.jpg')
-    }
-    if (image2) {
-      image2.mv('./public/pet-images/' + id + '/' + id + 2 + '.jpg')
-    }
-    if (image3) {
-      image3.mv('./public/pet-images/' + id + '/' + id + 3 + '.jpg')
-    }
-
   })
 })
 router.get('/delete-pet/:id', (req, res) => {
