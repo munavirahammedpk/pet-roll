@@ -1,6 +1,7 @@
 <header>
-    <nav class="navbar navbar-expand-lg navbar-light ">
-        <a class="navbar-brand" style="font-family:'Times New Roman', Times, serif; color:white;" href="/"><span style="font-family: Georgia, 'Times New Roman', Times, serif;"> P</span>etroll</a>
+    <nav class="navbar navbar-light ">
+        <a class="navbar-brand" style="font-family:'Times New Roman', Times, serif; color:white;" href="/"><span
+                style="font-family: Georgia, 'Times New Roman', Times, serif;"> P</span>etroll</a>
         <button class="seller">
             <a class="sell" href="/seller" style="text-decoration: none; color:rgb(224, 42, 42)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-plus-lg"
@@ -10,9 +11,42 @@
                 </svg>Sell
             </a>
         </button>
-        <button style="background-color: blanchedalmond;" class="navbar-toggler" type="button" data-toggle="collapse"
-            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-            aria-label="Toggle navigation">
+
+        <div class="dropdown d-flex align-items-end">
+            <button style="border-radius: 10px;" class="dropdown-toggle me-0" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{#if user}}
+                <span style="color: rgb(224, 32, 32);">{{user.name}}</span>
+                {{else}}
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-person"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                </svg>
+                {{/if}}
+
+            </button>
+            <div class="dropdown-menu p-0 m-0">
+                {{#if user}}
+                <a class="dropdown-item p-0 m-0" href="/logout">
+                    Logout</a>
+                {{else}}
+                {{!-- <a class="dropdown-item p-0 m-0" style="width: 20px;" href="/login">Login</a> --}}
+                 <button class="dropdown-item p-0 m-0" style="width: 6px;" type="button">Login</button>
+                {{/if}}
+
+
+            </div>
+        </div>
+        {{!-- <div class="d-flex align-items-end">
+            <!-- Icon -->
+            <a class="text-reset me-0" href="#">
+                <i class="fas fa-shopping-cart"></i>
+            </a>
+        </div> --}}
+        {{!-- <button style="background-color: blanchedalmond;" class="navbar-toggler" type="button"
+            data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -35,87 +69,33 @@
                 </li>
             </ul>
 
-            <div class="dropdown">
-                <button style="border-radius: 10px;" class="dropdown-toggle mr-3" type="button" id="dropdownMenuButton"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{#if user}}
-                    <span style="color: rgb(224, 32, 32);">{{user.name}}</span>
-                    {{else}}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-person"
-                        viewBox="0 0 16 16">
-                        <path
-                            d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
-                    </svg>
-                    {{/if}}
 
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    {{#if user}}
-                    <a class="dropdown-item" href="/logout">Logout</a>
-                    {{else}}
-                    <a class="dropdown-item" href="/login">Login</a>
-                    {{/if}}
-
-
-                </div>
-            </div>
-        </div>
+        </div> --}}
     </nav>
+    <div class="scrollmenu">
+        <a href="/">All Pets</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/favourite">Favourites</a>
+        <a href="/faqs">FAQs</a>
+        <a href="#about">About</a>
+    </div>
 </header>
-<!-- <script>
-    function getFav() {
-        $.ajax({
-            url: '/addToFav',
-            method: 'get',
-            success: (response) => {
-                var userId = response.user
-                if (response.user) {
-                    var fav = JSON.parse(localStorage.getItem(userId))
-                    var favitems = document.getElementById(favitems)
-                    fav.forEach((item, index) => {
-                        favitems.innerHTML += item
-                    })
-                    location.href = '/favourate'
 
-                } else {
-                    location.href = '/login'
-                }
-            }
-        })
-    }
-</script> -->
 
 <style>
-    .cat {
-        
-    }
-
     .navbar-brand {
         font-weight: 700;
-        font-size: 42px;
+        font-size: 25px;
         color: white;
         margin-right: 30px;
 
     }
 
-    .nav-link {
-        text-align: center;
-        font-size: 20px;
-        font-weight: 600;
-        padding: auto;
-    }
-
-
-
     .seller {
-
         border-color: red;
         border-radius: 40px;
         width: 90px;
         height: 40px;
-
-
-
     }
 
     .sell {
@@ -128,5 +108,27 @@
     .navbar {
         background-color: #362691;
 
+    }
+
+    /*Scrollable Nav Bar*/
+
+    div.scrollmenu {
+        background-color: #333;
+        overflow: auto;
+        white-space: nowrap;
+    }
+
+    div.scrollmenu a {
+        display: inline-block;
+        color: white;
+        text-align: center;
+        padding: 6px;
+        margin-right: 20px;
+        margin-left: 20px;
+        text-decoration: none;
+    }
+
+    div.scrollmenu a:hover {
+        background-color: #777;
     }
 </style>
