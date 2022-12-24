@@ -1,25 +1,11 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-lg-10 col-sm-12">
-            <div class=" boxContainer mt-3">
-               <!-- <form action="/search" method="get">
-                    <table class="elementsContainer">
-                        <tr>
-                            <td>
-                                <input onclick="loseFocus()" id="search-box" onkeyup="sendData(this)" autocomplete="off"
-                                    name="search" class="form-control mr-sm-2 search" type="text"
-                                    placeholder="" aria-label="Search">
-                            </td>
-                            <td>
-                                <button hidden class="my-2 my-sm-0 button" type="submit"><i
-                                        class="bi bi-search"></i></button>
-                            </td>
-                        </tr>
-                    </table>
-                </form>-->
+            <div class=" boxContainer mt-1">
                 <div id="search2">
                     <form class="example" action="/search" method="get">
-                        <input id="search-box" onkeyup="sendData(this)" name="search" type="text" placeholder="Search Pets, Categories..." autocomplete="off">
+                        <input id="search-box" onkeyup="sendData(this)" name="search" type="text"
+                            placeholder="Search Pets, Categories..." autocomplete="off">
                         <button hidden type="submit"><i class="fa fa-search"></i></button>
                     </form>
                 </div>
@@ -81,11 +67,11 @@
     /* Style the search field */
     form.example input[type=text] {
         border-radius: 50px;
-        padding: 10px;
-        font-size: 17px;
+        padding: 2px;
+        font-size: 11px;
         border: 1px solid grey;
         float: left;
-        width: 80%;
+        width: 100%;
         background: #f1f1f1;
     }
 
