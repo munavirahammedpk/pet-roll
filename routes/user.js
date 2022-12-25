@@ -324,7 +324,7 @@ router.post('/forgot', (req, res) => {
         id: response._id
       }
       const token = jwt.sign(payload, secret, { expiresIn: '10m' })
-      const link = 'http://localhost:7000/rest-password/' + response._id + '/' + token
+      const link = 'https://pet-roll.up.railway.app/rest-password/' + response._id + '/' + token
       console.log(link);
       //console.log(response.email);
 
