@@ -10,8 +10,10 @@ module.exports={
         mobile:String,
         place:String,
         district:String,
-        userid:String
-
+        userid:String,
+        imagePath_0:String,
+        imagePath_1:String,
+        imagePath_2:String,
     }),
     userSchema: new mongoose.Schema({
         name:String,

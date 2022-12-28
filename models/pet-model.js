@@ -9,12 +9,13 @@ const ObjectId = mongoose.Types.ObjectId
 module.exports.petModel = new mongoose.model(collections.PET_COLLECTION, schemas.petSchema)
 
 module.exports = {
-     
+
     addPets: (petDetails) => {
         //console.log(userId);
         return new Promise(async (resolve, reject) => {
+           
             var petCollection = new this.petModel(petDetails)
-            petCollection.save().then((data)=>{
+           await petCollection.save().then((data) => {
                 resolve(data._id)
             })
             //  await db.get().collection(collection.PET_COLLECTION).insertOne(petDetails).then((data) => {
@@ -23,17 +24,18 @@ module.exports = {
         })
     },
     getAllPets: () => {
-        return new Promise(async(resolve, reject) => {
-             await this.petModel.find({}).sort({ _id: -1 }).lean().exec((err,data)=>{
-                if(err){
+        return new Promise(async (resolve, reject) => {
+            await this.petModel.find({}).sort({ _id: -1 }).lean().exec((err, data) => {
+                console.log(data);
+                if (err) {
                     console.log(err);
-                }else{
-                    
-            
+                } else {
+
+
                     resolve(data)
                 }
             })
-            //console.log(AllPets);
+           // console.log(data);
             //resolve(AllPets)
         })
     },
@@ -64,31 +66,31 @@ module.exports = {
             })
         })
     },
-    deletePet:(petId)=>{
-        return new Promise(async(resolve,reject)=>{
-            await this.petModel.deleteOne({_id:ObjectId(petId)}).then((response)=>{
+    deletePet: (petId) => {
+        return new Promise(async (resolve, reject) => {
+            await this.petModel.deleteOne({ _id: ObjectId(petId) }).then((response) => {
                 //console.log(response);
                 resolve()
-    
+
             })
         })
-        
+
     },
-    searchPet:(payload) => {
+    searchPet: (payload) => {
         //console.log(payload);
         return new Promise(async (resolve, reject) => {
             //var regex = new RegExp(payload, 'i')
             //console.log(regex);
-            let searchPet = await this.petModel.find({$or:[{name:{$regex:new RegExp('^'+payload+'.*','i')}},{category:{$regex:new RegExp('^'+payload+'.*','i')}},{description:{$regex:new RegExp('^'+payload+'.*','i')}}]}).lean()
+            let searchPet = await this.petModel.find({ $or: [{ name: { $regex: new RegExp('^' + payload + '.*', 'i') } }, { category: { $regex: new RegExp('^' + payload + '.*', 'i') } }, { description: { $regex: new RegExp('^' + payload + '.*', 'i') } }] }).lean()
             //searchPet=searchPet.slice(0,10)// for set limt
 
             //console.log(searchPet);
             resolve(searchPet)
         })
     },
-    searched:(key)=>{
-        return new Promise(async(resolve,reject)=>{
-            let searchPet = await this.petModel.find({$or:[{name:{$regex:new RegExp('^'+key+'.*','i')}},{category:{$regex:new RegExp('^'+key+'.*','i')}},{description:{$regex:new RegExp('^'+key+'.*','i')}}]}).lean()
+    searched: (key) => {
+        return new Promise(async (resolve, reject) => {
+            let searchPet = await this.petModel.find({ $or: [{ name: { $regex: new RegExp('^' + key + '.*', 'i') } }, { category: { $regex: new RegExp('^' + key + '.*', 'i') } }, { description: { $regex: new RegExp('^' + key + '.*', 'i') } }] }).lean()
             resolve(searchPet)
         })
 

@@ -7,6 +7,7 @@ var router = express.Router();
 // var buyerHelpers = require('../helpers/buyer-helpers');
 // var sellerHelpers = require('../helpers/seller-helpers');
 const { response } = require('express');
+const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const path = require('path');
 var Handlebars = require('handlebars');
@@ -16,6 +17,12 @@ const sellerModel = require('../models/userModel/seller-model');
 const petsHelper = require('../models/pet-model')
 const buyerHelper = require('../models/userModel/buyer-model');
 
+
+cloudinary.config({
+  cloud_name: "dvum7c92z",
+  api_key: "236799976881486",
+  api_secret: "n3JakgWpwzG4Twzav1zTnOMVW3I"
+});
 
 
 const jwt_secret = 'some super secret...'
@@ -28,56 +35,54 @@ const verifyLogin = (req, res, next) => {
   }
 }
 
-function isImage() {
-  Handlebars.registerHelper("ifSecond", function (value, options) {
-    //console.log(value);
-    let path = './public/pet-images/' + value + '/' + value + 1 + '.jpg'
-    //console.log(path);
-    if (fs.existsSync(path)) {
-      //console.log('exist');
-      return true
-    } else {
-      return false
-      //console.log('not');
-    }
-    //return value+'/2';
-  })
-  Handlebars.registerHelper("ifThird", function (value, options) {
-    //console.log(value);
-    let path = './public/pet-images/' + value + '/' + value + 2 + '.jpg'
-    //console.log(path);
-    if (fs.existsSync(path)) {
-      //console.log('exist');
-      return true
-    } else {
-      return false
-      //console.log('not');
-    }
-    //return value+'/2';
-  })
-  Handlebars.registerHelper("ifFourth", function (value, options) {
-    //console.log(value);
-    let path = './public/pet-images/' + value + '/' + value + 3 + '.jpg'
-    //console.log(path);
-    if (fs.existsSync(path)) {
+// function isImage() {
+//   Handlebars.registerHelper("ifSecond", function (value, options) {
+//     //console.log(value);
+//     let path = './public/pet-images/' + value + '/' + value + 1 + '.jpg'
+//     //console.log(path);
+//     if (fs.existsSync(path)) {
+//       //console.log('exist');
+//       return true
+//     } else {
+//       return false
+//       //console.log('not');
+//     }
+//     //return value+'/2';
+//   })
+//   Handlebars.registerHelper("ifThird", function (value, options) {
+//     //console.log(value);
+//     let path = './public/pet-images/' + value + '/' + value + 2 + '.jpg'
+//     //console.log(path);
+//     if (fs.existsSync(path)) {
+//       //console.log('exist');
+//       return true
+//     } else {
+//       return false
+//       //console.log('not');
+//     }
+//     //return value+'/2';
+//   })
+//   Handlebars.registerHelper("ifFourth", function (value, options) {
+//     //console.log(value);
+//     let path = './public/pet-images/' + value + '/' + value + 3 + '.jpg'
+//     //console.log(path);
+//     if (fs.existsSync(path)) {
 
-      return true
-    } else {
-      return false
+//       return true
+//     } else {
+//       return false
 
-    }
+//     }
 
-  })
+//   })
 
-}
+//}
 
 
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
   var user = req.session.user
-
-  isImage()
 
   petsHelper.getAllPets().then((pets) => {
     //res.render('buyer/view-pets',{pets})
@@ -90,33 +95,69 @@ router.get('/seller', verifyLogin, (req, res) => {
   let user = req.session.user
   res.render('seller/add-pets', { user })
 })
-router.post('/add-pets', (req, res) => {
-  petsHelper.addPets(req.body).then((id) => {
-    console.log(id);
+router.post('/add-pets', async (req, res) => {
+  let image0 = req.files.image0
+  let image1 = req.files.image1
+  let image2 = req.files.image2
+
+  if (image0) {
+    await cloudinary.uploader.upload(image0.tempFilePath, (err, result) => {
+      newImageUrl_0 = result.url;
+    });
+  }
+
+  if (image1) {
+    await cloudinary.uploader.upload(image1.tempFilePath, (err, result) => {
+      newImageUrl_1 = result.url;
+    });
+  }
+
+  if (image2) {
+    await cloudinary.uploader.upload(image2.tempFilePath, (err, result) => {
+      newImageUrl_2 = result.url;
+    });
+  }
+
+  var petDetails = {
+    name: req.body.name,
+    category: req.body.category,
+    price: req.body.price,
+    description: req.body.description,
+    oname: req.body.oname,
+    mobile: req.body.mobile,
+    place: req.body.place,
+    district: req.body.district,
+    userid: req.body.userid,
+    imagePath_0: newImageUrl_0,
+    imagePath_1: newImageUrl_1,
+    imagePath_2: newImageUrl_2,
+  }
+
+  //console.log(petDetails);
+  petsHelper.addPets(petDetails).then((id) => {
+
+    //console.log(req.body.image0);
     //sellerHelpers.addToDashboard()
 
-    let image0 = req.files.image0
-    let image1 = req.files.image1
-    let image2 = req.files.image2
-    let image3 = req.files.image3
-    //console.log(image0);
-    fs.mkdir(path.join(__dirname, '../public/pet-images/' + id + '/'), {}, err => {
-      if (err) throw err;
-      //console.log('file created...');
 
-    })
-    //console.log(req.body.userid);
-    image0.mv('./public/pet-images/' + id + '/' + id + 0 + '.jpg')
+    // //console.log(image0.name);
+    // fs.mkdir(path.join(__dirname, '../public/pet-images/' + id + '/'), {}, err => {
+    //   if (err) throw err;
+    //   //console.log('file created...');
 
-    if (image1) {
-      image1.mv('./public/pet-images/' + id + '/' + id + 1 + '.jpg')
-    }
-    if (image2) {
-      image2.mv('./public/pet-images/' + id + '/' + id + 2 + '.jpg')
-    }
-    if (image3) {
-      image3.mv('./public/pet-images/' + id + '/' + id + 3 + '.jpg')
-    }
+    // })
+    // //console.log(req.body.userid);
+    // image0.mv('./public/pet-images/' + id + '/' + id + 0 + '.jpg')
+
+    // if (image1) {
+    //   image1.mv('./public/pet-images/' + id + '/' + id + 1 + '.jpg')
+    // }
+    // if (image2) {
+    //   image2.mv('./public/pet-images/' + id + '/' + id + 2 + '.jpg')
+    // }
+    // if (image3) {
+    //   image3.mv('./public/pet-images/' + id + '/' + id + 3 + '.jpg')
+    // }
     sellerModel.addToDashboard(req.session.user._id, id)
 
 
@@ -208,7 +249,6 @@ router.get('/logout', (req, res) => {
   res.redirect('/')
 })
 router.get('/more/:id', (req, res) => {
-  isImage()
   Handlebars.registerHelper("inc", function (value, options) {
     return parseInt(value) + 1;
   })
@@ -256,12 +296,6 @@ router.post('/edit-pet/:id', (req, res) => {
 router.get('/delete-pet/:id', (req, res) => {
   var id = req.params.id
   petsHelper.deletePet(req.params.id).then(() => {
-    const pathToDir = path.join(__dirname, '../public/pet-images/' + id)
-    fs.rmdir(pathToDir, { recursive: true }, (err) => {
-      if (err) {
-        throw err
-      }
-    })
     res.json({ status: true })
   })
 })
@@ -292,7 +326,6 @@ router.get('/favourite', verifyLogin, (req, res) => {
   })
 })
 router.get('/search', async (req, res) => {
-  isImage()
   let searched = await petsHelper.searched(req.query.search)
   res.render('buyer/searched', { searched, buyer: true })
 })
