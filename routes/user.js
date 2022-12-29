@@ -358,7 +358,7 @@ router.post('/forgot', (req, res) => {
       }
       const token = jwt.sign(payload, secret, { expiresIn: '10m' })
       const link = 'https://pet-roll.up.railway.app/rest-password/' + response._id + '/' + token
-      console.log(link);
+      //console.log(link);
       //console.log(response.email);
 
       const data = {
@@ -373,7 +373,7 @@ router.post('/forgot', (req, res) => {
         // true for 465, false for other ports
         auth: {
           user: 'petroll734@gmail.com', // generated ethereal user
-          pass: '8078745821', // generated ethereal password
+          pass: 'eosqlfbghrnunkhy', // generated ethereal password
         },
       });
       transporter.sendMail(data, (error, info) => {
