@@ -28,11 +28,19 @@
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
                             {{#if admin}}
-                                <a class="dropdown-item" href="/admin/logout">Logout</a>
-                                {{else}}
-                                <a class="dropdown-item" href="/admin/login">Login</a>
+                            <a class="dropdown-item" href="/admin/logout">Logout</a>
+                            {{else}}
+                            <a class="dropdown-item" href="/admin/login">Login</a>
                             {{/if}}
                         </div>
+
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <a href="/admin/banned" class="btn btn-primary">
+                            Banned Users
+                        </a>
                     </div>
                 </li>
             </ul>

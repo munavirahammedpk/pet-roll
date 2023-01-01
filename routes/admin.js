@@ -5,6 +5,7 @@ const { handlebars } = require('hbs');
 const path = require('path')
 const fs = require('fs');
 const adminHelper = require('../models/admin-model');
+const { response } = require('express');
 
 const verifyLogin = (req, res, next) => {
   if (req.session.admin) {
@@ -25,7 +26,7 @@ router.get('/', verifyLogin, function (req, res, next) {
   })
 });
 router.get('/delete-user/:id', (req, res) => {
-  let userId=req.params.id
+  let userId = req.params.id
   adminHelper.deleteUser(userId).then(() => {
     res.redirect('/admin')
   })
@@ -40,14 +41,8 @@ router.get('/view-pets/:id', async (req, res) => {
   })
 })
 router.get('/delete-pet/:id', (req, res) => {
-  let id=req.params.id
+  let id = req.params.id
   adminHelper.deletePet(req.params.id).then(() => {
-    const pathToDir = path.join(__dirname, '../public/pet-images/' + id)
-    fs.rmdir(pathToDir, { recursive: true }, (err) => {
-      if (err) {
-        throw err
-      }
-    })
     res.redirect('/admin')
   })
 })
@@ -92,6 +87,24 @@ router.get('/logout', (req, res) => {
   req.session.admin = null
   res.redirect('/admin')
 })
+
+router.get('/banned', (req, res) => {
+  adminHelper.getBannedIds().then((banned) => {
+    let admin = req.session.admin
+    res.render('admin/view_banned', { banned,admin})
+  })
+})
+
+router.get('/delete-banned/:id', (req, res) => {
+  var bannedId = req.params.id;
+  //console.log(bannedId);
+  adminHelper.freeFrombanned(bannedId).then((response) => {
+    adminHelper.getBannedIds().then((banned) => {
+      let admin = req.session.admin
+      res.render('admin/view_banned', { banned ,admin})
+    });
+  });
+});
 
 
 module.exports = router;

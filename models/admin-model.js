@@ -1,6 +1,7 @@
 const { response } = require('express')
 const collections = require('../config/collections')
 const mongoose = require('mongoose')
+const cloudinary = require('cloudinary').v2;
 const schemas = require('../schemas')
 
 
@@ -9,30 +10,30 @@ const ObjectId = mongoose.Types.ObjectId
 
 module.exports.adminModel = new mongoose.model(collections.ADMIN_COLLECTION, schemas.adminSchema)
 const userModel = mongoose.model(collections.USER_COLLECTION, schemas.userSchema)
-const bannedModel= mongoose.model(collections.BANNED_COLLECTION,schemas.bannedSchema)
+const bannedModel = mongoose.model(collections.BANNED_COLLECTION, schemas.bannedSchema)
 const dashboardModel = mongoose.model(collections.DASHBOARD_COLLECTION, schemas.dashboardSchema)
 const petModel = mongoose.model(collections.PET_COLLECTION, schemas.petSchema)
 
-module.exports={
-    getUsers:()=>{
-        return new Promise(async(resolve,reject)=>{
-            let users=await userModel.find({}).lean()
+module.exports = {
+    getUsers: () => {
+        return new Promise(async (resolve, reject) => {
+            let users = await userModel.find({}).lean()
             //console.log(users);
             resolve(users)
         })
     },
-    deleteUser:(userId)=>{
-        return new Promise(async(resolve,reject)=>{
-            await userModel.findOne({_id:userId}).then(async(response)=>{
-                let bannedId=response.email
-                var bannedCollection=new bannedModel({bannedId})
-                await bannedCollection.save().then(async()=>{
-                    await userModel.deleteOne({_id:userId}).then(()=>{
+    deleteUser: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            await userModel.findOne({ _id: userId }).then(async (response) => {
+                let bannedId = response.email
+                var bannedCollection = new bannedModel({ bannedId })
+                await bannedCollection.save().then(async () => {
+                    await userModel.deleteOne({ _id: userId }).then(() => {
                         resolve()
                     })
                 })
             })
-            
+
         })
     },
     getPets: (userId) => {
@@ -40,7 +41,7 @@ module.exports={
             let dashboard = await dashboardModel.findOne({ user: ObjectId(userId) })
             let pets = await dashboardModel.aggregate([
                 {
-                    $match: { user:ObjectId (userId) }
+                    $match: { user: ObjectId(userId) }
                 },
                 {
                     $lookup: {
@@ -63,10 +64,16 @@ module.exports={
     },
     deletePet: (petId) => {
         return new Promise(async (resolve, reject) => {
-            await petModel.deleteOne({ _id:ObjectId(petId)}).then((response) => {
-                //console.log(response);
-                resolve()
-
+            await petModel.findOne({ _id: petId }).lean().then(async (pet) => {
+                await cloudinary.uploader.destroy(pet.pub_id_0, async (err, result) => {
+                    await cloudinary.uploader.destroy(pet.pub_id_1, async (err, result) => {
+                        await cloudinary.uploader.destroy(pet.pub_id_2, async (err, result) => {
+                            await petModel.deleteOne({ _id: ObjectId(petId) }).then((response) => {
+                                resolve()
+                            })
+                        });
+                    });
+                });
             })
         })
     },
@@ -77,9 +84,9 @@ module.exports={
 
             adminData.password = await bcrypt.hash(adminData.password, 10)
 
-             var adminCollection=new this.adminModel(adminData)
-             await adminCollection.save().then(async (data) => {
-                let admin = await this.adminModel.findOne({  _id: ObjectId(data._id) })
+            var adminCollection = new this.adminModel(adminData)
+            await adminCollection.save().then(async (data) => {
+                let admin = await this.adminModel.findOne({ _id: ObjectId(data._id) })
                 //console.log(admin);
                 if (admin) {
                     response.admin = admin
@@ -112,6 +119,20 @@ module.exports={
             } else {
                 resolve({ status: false })
             }
+        })
+    },
+    getBannedIds: () => {
+        return new Promise(async (resolve, reject) => {
+            await bannedModel.find({}).lean().then((Ids) => {
+                resolve(Ids);
+            })
+        })
+    },
+    freeFrombanned: (bannedId) => {
+        return new Promise(async (resolve, reject) => {
+            await bannedModel.deleteOne({ bannedId: bannedId }).then((response) => {
+                resolve(response);
+            })
         })
     }
 }
