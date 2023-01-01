@@ -31,7 +31,7 @@
           <td>{{this.name}}</td>
           <td>{{this.category}}</td>
           <td>{{this.price}}</td>
-          <td><img style="width: 50px; height=50px" src="/pet-images/{{this._id}}/{{this._id}}0.jpg" alt="..."></td>
+          <td><img style="width: 50px; height=50px" src="{{this.imagePath_0}}" alt="..."></td>
           <td>
             <a href="/edit-pet/{{this._id}}" class="btn btn-primary">Edit</a>
             <button onclick="deletePet('{{this._id}}','Are you want to delete {{this.name}} ?','{{this.name}}')"
@@ -53,7 +53,7 @@
 
 <script>
 
-  function deletePet(petId, value,name) {
+  function deletePet(petId, value, name) {
     var result = confirm(value)
     if (result) {
       $.ajax({
@@ -61,7 +61,7 @@
         method: 'get',
         success: (response) => {
           if (response.status) {
-             document.getElementById(petId).innerHTML = ""
+            document.getElementById(petId).innerHTML = ""
             myFunction(name)
           }
         }
@@ -73,7 +73,7 @@
 
     var x = document.getElementById("snackbar");
     x.className = "show";
-    x.innerHTML='You Deleted '+name;
+    x.innerHTML = 'You Deleted ' + name;
     setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
   }
 

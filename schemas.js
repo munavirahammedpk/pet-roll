@@ -14,6 +14,9 @@ module.exports={
         imagePath_0:String,
         imagePath_1:String,
         imagePath_2:String,
+        pub_id_0:String,
+        pub_id_1:String,
+        pub_id_2:String,
     }),
     userSchema: new mongoose.Schema({
         name:String,

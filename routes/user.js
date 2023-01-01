@@ -2,10 +2,6 @@ var express = require('express');
 var router = express.Router();
 
 
-
-//var petsHelpers = require('../helpers/pets-helpers');
-// var buyerHelpers = require('../helpers/buyer-helpers');
-// var sellerHelpers = require('../helpers/seller-helpers');
 const { response } = require('express');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
@@ -35,51 +31,6 @@ const verifyLogin = (req, res, next) => {
   }
 }
 
-// function isImage() {
-//   Handlebars.registerHelper("ifSecond", function (value, options) {
-//     //console.log(value);
-//     let path = './public/pet-images/' + value + '/' + value + 1 + '.jpg'
-//     //console.log(path);
-//     if (fs.existsSync(path)) {
-//       //console.log('exist');
-//       return true
-//     } else {
-//       return false
-//       //console.log('not');
-//     }
-//     //return value+'/2';
-//   })
-//   Handlebars.registerHelper("ifThird", function (value, options) {
-//     //console.log(value);
-//     let path = './public/pet-images/' + value + '/' + value + 2 + '.jpg'
-//     //console.log(path);
-//     if (fs.existsSync(path)) {
-//       //console.log('exist');
-//       return true
-//     } else {
-//       return false
-//       //console.log('not');
-//     }
-//     //return value+'/2';
-//   })
-//   Handlebars.registerHelper("ifFourth", function (value, options) {
-//     //console.log(value);
-//     let path = './public/pet-images/' + value + '/' + value + 3 + '.jpg'
-//     //console.log(path);
-//     if (fs.existsSync(path)) {
-
-//       return true
-//     } else {
-//       return false
-
-//     }
-
-//   })
-
-//}
-
-
-
 /* GET home page. */
 router.get('/', async (req, res, next) => {
   var user = req.session.user
@@ -102,18 +53,21 @@ router.post('/add-pets', async (req, res) => {
 
   if (image0) {
     await cloudinary.uploader.upload(image0.tempFilePath, (err, result) => {
+      publicId_0 = result.public_id;
       newImageUrl_0 = result.url;
     });
   }
 
   if (image1) {
     await cloudinary.uploader.upload(image1.tempFilePath, (err, result) => {
+      publicId_1 = result.public_id;
       newImageUrl_1 = result.url;
     });
   }
 
   if (image2) {
     await cloudinary.uploader.upload(image2.tempFilePath, (err, result) => {
+      publicId_2 = result.public_id;
       newImageUrl_2 = result.url;
     });
   }
@@ -131,40 +85,14 @@ router.post('/add-pets', async (req, res) => {
     imagePath_0: newImageUrl_0,
     imagePath_1: newImageUrl_1,
     imagePath_2: newImageUrl_2,
+    pub_id_0: publicId_0,
+    pub_id_1: publicId_1,
+    pub_id_2: publicId_2,
   }
 
-  //console.log(petDetails);
   petsHelper.addPets(petDetails).then((id) => {
-
-    //console.log(req.body.image0);
-    //sellerHelpers.addToDashboard()
-
-
-    // //console.log(image0.name);
-    // fs.mkdir(path.join(__dirname, '../public/pet-images/' + id + '/'), {}, err => {
-    //   if (err) throw err;
-    //   //console.log('file created...');
-
-    // })
-    // //console.log(req.body.userid);
-    // image0.mv('./public/pet-images/' + id + '/' + id + 0 + '.jpg')
-
-    // if (image1) {
-    //   image1.mv('./public/pet-images/' + id + '/' + id + 1 + '.jpg')
-    // }
-    // if (image2) {
-    //   image2.mv('./public/pet-images/' + id + '/' + id + 2 + '.jpg')
-    // }
-    // if (image3) {
-    //   image3.mv('./public/pet-images/' + id + '/' + id + 3 + '.jpg')
-    // }
     sellerModel.addToDashboard(req.session.user._id, id)
-
-
     res.render('seller/add-pets')
-
-
-
   })
 })
 router.get('/login', (req, res, next) => {
@@ -284,7 +212,6 @@ router.get('/dashboard', verifyLogin, (req, res) => {
 })
 router.get('/edit-pet/:id', async (req, res) => {
   let details = await petsHelper.getPetDetails(req.params.id)
-  isImage()
   let user = req.session.user
   res.render('seller/edit-pets', { details, user })
 })
@@ -294,7 +221,6 @@ router.post('/edit-pet/:id', (req, res) => {
   })
 })
 router.get('/delete-pet/:id', (req, res) => {
-  var id = req.params.id
   petsHelper.deletePet(req.params.id).then(() => {
     res.json({ status: true })
   })
