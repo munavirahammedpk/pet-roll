@@ -24,17 +24,23 @@
                             placeholder="Type a Brief Description About Your Pet" required></textarea>
 
                         <label for="">Image 1</label>
-                        <input type="file" name="image0" class="form-control" required>
+                        <input type="file" onchange="return fileValidation_0()" name="image0" id="image0"
+                            class="form-control" required>
                         <br>
+
+                        <div id="imagePreview_0"></div>
 
                         <label for="">Image 2</label>
-                        <input type="file" name="image1" class="form-control" required>
+                        <input type="file" onchange="return fileValidation_1()" name="image1" id="image1"
+                            class="form-control" required>
                         <br>
+                        <div id="imagePreview_1"></div>
 
                         <label for="">Image 3</label>
-                        <input type="file" name="image2" class="form-control" required>
+                        <input type="file" onchange="return fileValidation_2()" name="image2" id="image2"
+                            class="form-control" required>
                         <br>
-
+                        <div id="imagePreview_2"></div>
 
                     </div>
                 </div>
@@ -74,3 +80,99 @@
     </form>
 
 </section>
+
+<script>
+    function fileValidation_0() {
+        var fileInput =
+            document.getElementById('image0');
+
+        var filePath = fileInput.value;
+
+        // Allowing file type
+        var allowedExtensions =
+            /(\.jpg|\.jpeg|\.png|\.gif|\.jfif)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        }
+        else {
+
+            // Image preview
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(
+                        'imagePreview_0').innerHTML =
+                        '<img src="' + e.target.result
+                        + '" style="width: 150px; height=150px"/>';
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+    }
+    function fileValidation_1() {
+        var fileInput =
+            document.getElementById('image1');
+
+        var filePath = fileInput.value;
+
+        // Allowing file type
+        var allowedExtensions =
+            /(\.jpg|\.jpeg|\.png|\.gif|\.jfif)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        }
+        else {
+
+            // Image preview
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(
+                        'imagePreview_1').innerHTML =
+                        '<img src="' + e.target.result
+                        + '" style="width: 150px; height=150px"/>';
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+    }
+    function fileValidation_2() {
+        var fileInput =
+            document.getElementById('image2');
+
+        var filePath = fileInput.value;
+
+        // Allowing file type
+        var allowedExtensions =
+            /(\.jpg|\.jpeg|\.png|\.gif|\.jfif)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        }
+        else {
+
+            // Image preview
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(
+                        'imagePreview_2').innerHTML =
+                        '<img src="' + e.target.result
+                        + '" style="width: 150px; height=150px"/>';
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+    }
+</script>
